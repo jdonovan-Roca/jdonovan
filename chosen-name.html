@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chosen Name case study | Juliana Donovan Agudelo</title>
+<meta name="description" content="How I turned a manual, multi-team process into a 40-second self-service workflow for City of Boston employees.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2541; --ink-2:#4A5468; --bg:#F5F6F8; --surface:#FFFFFF; --warm:#F3F1ED;
+    --panel:#EEF2F7; --accent:#E9B44C; --link:#3E6FD8; --link-hover:#2A55B5; --line:#D5DAE5; --tint:#E6EAF4;
+    --head:"Manrope",system-ui,sans-serif; --body:"Atkinson Hyperlegible Next",system-ui,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:var(--surface);line-height:1.65;font-size:1.0625rem}
+  img{max-width:100%;height:auto;display:block}
+  h1,h2,h3{font-family:var(--head);letter-spacing:-.02em;line-height:1.2;margin:0}
+  p{margin:0}
+  a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--link);text-decoration-thickness:2px;text-underline-offset:5px;transition:color .15s,text-decoration-thickness .15s}
+  a:hover{color:var(--link-hover);text-decoration-thickness:3px}
+  :focus-visible{outline:3px solid var(--link);outline-offset:4px;border-radius:2px}
+  .skip{position:absolute;left:16px;top:-60px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;z-index:10;text-decoration:none}
+  .skip:focus{top:16px;color:#fff}
+  .container{max-width:1200px;margin:0 auto;padding:0 32px}
+  @media (max-width:600px){.container{padding:0 20px}}
+
+  /* nav */
+  nav.top{display:flex;justify-content:space-between;align-items:center;padding:24px 0;gap:16px}
+  nav.top .name{font-family:var(--head);font-weight:800;text-decoration:none}
+  nav.top ul{list-style:none;display:flex;gap:24px;margin:0;padding:0}
+  @media (max-width:520px){nav.top{flex-direction:column;align-items:flex-start;gap:12px}}
+
+  /* hero */
+  .hero{padding:32px 0 0}
+  .back{display:inline-block;font-family:var(--head);font-weight:700;margin-bottom:40px}
+  .hero h1{font-size:clamp(2.3rem,5vw,3.75rem);font-weight:800;letter-spacing:-.035em;max-width:18ch}
+  .lede{margin-top:20px;font-size:clamp(1.15rem,1.6vw,1.3rem);color:var(--ink-2);max-width:54ch}
+  .panel{background:var(--panel);border-radius:20px;padding:clamp(16px,3.2vw,40px)}
+  .screen{border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 14px 32px -22px rgba(28,37,65,.4)}
+  .hero .panel{margin-top:48px}
+  .flow3{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,24px)}
+  .flow3 p{margin-top:14px;font-family:var(--head);font-weight:700;font-size:.98rem}
+  .flow3 span{color:var(--ink-2);font-weight:600}
+  @media (max-width:760px){.flow3{grid-template-columns:1fr}}
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin:48px 0 0;padding:0}
+  .facts dt{font-family:var(--head);font-weight:700;font-size:.92rem;color:var(--ink-2)}
+  .facts dd{margin:4px 0 0}
+  .impact{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin:40px 0 0;padding:32px 0 0;border-top:1px solid var(--line)}
+  .impact strong{display:block;font-family:var(--head);font-weight:800;font-size:clamp(1.8rem,3vw,2.3rem);letter-spacing:-.03em;line-height:1.15}
+  .impact span{color:var(--ink-2)}
+  @media (max-width:860px){.facts{grid-template-columns:1fr 1fr}.impact{grid-template-columns:1fr}}
+
+  /* body layout with table of contents */
+  .layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:64px;margin-top:clamp(72px,9vw,112px)}
+  .toc{position:sticky;top:24px;align-self:start}
+  .toc p{font-family:var(--head);font-weight:700;font-size:.92rem;color:var(--ink-2);margin-bottom:12px}
+  .toc ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--line)}
+  .toc a{display:block;padding:7px 0 7px 16px;margin-left:-2px;border-left:2px solid transparent;text-decoration:none;color:var(--ink-2);font-size:.98rem}
+  .toc a:hover{color:var(--ink);text-decoration:underline;text-decoration-color:var(--link)}
+  .toc a[aria-current="true"]{color:var(--ink);font-weight:700;border-left-color:var(--link)}
+  @media (max-width:1060px){.layout{grid-template-columns:1fr;gap:0}.toc{display:none}}
+
+  article section{padding:clamp(56px,7vw,88px) 0;border-top:1px solid var(--line)}
+  article section:first-child{border-top:0;padding-top:0}
+  .label{font-family:var(--head);font-weight:700;color:var(--ink-2);font-size:1rem;margin-bottom:10px}
+  h2{font-size:clamp(1.75rem,3.2vw,2.4rem);font-weight:800;max-width:24ch}
+  h3{font-size:1.2rem;font-weight:800}
+  .text{max-width:66ch;color:var(--ink-2);margin-top:20px}
+  .text p+p{margin-top:16px}
+  .text strong{color:var(--ink)}
+  figure{margin:40px 0 0}
+  figcaption{margin-top:14px;color:var(--ink-2);font-size:.95rem;max-width:70ch}
+
+  .quote{margin:0;padding-left:24px;border-left:4px solid var(--accent)}
+  .quote p:first-child{font-family:var(--head);font-weight:800;font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.25;letter-spacing:-.02em;color:var(--ink);max-width:28ch}
+  .quote p+p{margin-top:14px;color:var(--ink-2);max-width:60ch}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:32px 48px;margin-top:40px}
+  .two ul{margin:12px 0 0;padding-left:1.2em;color:var(--ink-2)}
+  .two li+li{margin-top:8px}
+  .two p{margin-top:8px;color:var(--ink-2)}
+  @media (max-width:700px){.two{grid-template-columns:1fr}}
+
+  .hmw{margin-top:48px;background:var(--ink);color:#fff;border-radius:16px;padding:clamp(24px,4vw,40px)}
+  .hmw p:first-child{font-family:var(--head);font-weight:700;color:#C8CEDC;font-size:.98rem}
+  .hmw p+p{margin-top:10px;font-family:var(--head);font-weight:800;font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.35;letter-spacing:-.015em}
+
+  .cards{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .cards li{border:1px solid var(--line);border-radius:14px;padding:20px}
+  .cards p{margin-top:6px;color:var(--ink-2);font-size:1rem}
+  @media (max-width:900px){.cards{grid-template-columns:1fr 1fr}}
+  @media (max-width:480px){.cards{grid-template-columns:1fr}}
+
+  .tags{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+  .tags li{background:var(--tint);border-radius:999px;padding:6px 14px;font-family:var(--head);font-weight:700;font-size:.95rem}
+
+  .path .tag{display:inline-block;font-family:var(--head);font-weight:700;font-size:.85rem;background:var(--tint);padding:4px 12px;border-radius:999px;margin-bottom:12px}
+  .path{border:1px solid var(--line);border-radius:16px;padding:24px}
+
+  .scroller{overflow-x:auto;border-radius:10px;background:#fff;border:1px solid var(--line)}
+  .scroller img{max-width:none;width:2100px}
+  .hint{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:14px;color:var(--ink-2);font-size:.95rem}
+
+  .step{margin-top:clamp(40px,5vw,56px)}
+  .step+.step{margin-top:clamp(56px,7vw,80px)}
+  .step .num{font-family:var(--head);font-weight:800;color:var(--ink-2)}
+  .step h3{font-size:1.5rem;margin-top:4px}
+  .step .text{margin-top:10px}
+  .step figure{margin-top:24px}
+
+  .results{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .results li{border-top:3px solid var(--ink);padding-top:14px}
+  .results strong{display:block;font-family:var(--head);font-weight:800;font-size:clamp(1.5rem,2.4vw,1.9rem);letter-spacing:-.03em;line-height:1.2}
+  .results p{margin-top:6px;color:var(--ink-2);font-size:1rem}
+  @media (max-width:900px){.results{grid-template-columns:1fr 1fr}}
+  @media (max-width:480px){.results{grid-template-columns:1fr}}
+
+  .lessons{display:grid;gap:32px;margin-top:32px;max-width:66ch}
+  .lessons p{margin-top:8px;color:var(--ink-2)}
+  .closing{margin-top:40px;font-family:var(--head);font-weight:800;font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.35;max-width:36ch}
+
+  .next{background:var(--ink);color:#fff;padding:clamp(56px,7vw,88px) 0;margin-top:clamp(40px,6vw,72px)}
+  .next p{color:#C8CEDC;font-family:var(--head);font-weight:700}
+  .next a{color:#fff;font-family:var(--head);font-weight:800;font-size:clamp(1.8rem,4vw,2.75rem);letter-spacing:-.03em;text-decoration-color:var(--accent);display:inline-block;margin-top:6px}
+  .next a:hover{color:#fff;text-decoration-thickness:4px}
+  .next :focus-visible{outline-color:var(--accent)}
+  footer{background:var(--warm);padding:28px 0;color:var(--ink-2);font-size:.95rem}
+  footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .cards.cards3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:760px){.cards.cards3{grid-template-columns:1fr}}
+  .two p strong{color:var(--ink)}
+  .phones{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,240px));gap:clamp(16px,3vw,40px);justify-content:center;align-items:start}
+  .phones img{border-radius:14px}
+  .phones p{margin-top:12px;font-family:var(--head);font-weight:700;font-size:.95rem;text-align:center}
+  @media (max-width:600px){.phones{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.phones p{font-size:.8rem}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="container">
+  <nav class="top" aria-label="Main">
+    <a class="name" href="index.html">Juliana Donovan Agudelo</a>
+    <ul><li><a href="index.html#work">Work</a></li><li><a href="index.html#about">About</a></li><li><a href="index.html#contact">Contact</a></li></ul>
+  </nav>
+</div>
+
+<main id="main">
+  <header class="hero">
+    <div class="container">
+      <a class="back" href="index.html#work">Back to all work</a>
+      <h1>Simplifying the chosen-name update experience</h1>
+      <p class="lede">Turning a complex, manual process into a simple self-service workflow for City of Boston employees.</p>
+
+      <div class="panel">
+        <ol class="flow3" aria-label="The workflow in three screens">
+          <li><img class="screen" src="images/chosen-name/welcome.jpg" width="1440" height="960" alt="Welcome to Chosen Name screen explaining what a chosen name is, what is changing (chosen name and email address), what is not changing (legal name), and a note that changes apply across City systems"><p>1. <span>Learn what changes</span></p></li>
+          <li><img class="screen" src="images/chosen-name/name.jpg" width="1440" height="960" alt="Update Chosen Name screen showing the current name, Juliana Donovan, with required fields for chosen first and last name, a support documentation link, and Clear and Continue buttons"><p>2. <span>Enter a chosen name</span></p></li>
+          <li><img class="screen" src="images/chosen-name/email.jpg" width="1440" height="960" alt="Email choice screen showing the chosen name with an Edit button, two options, Use new email (camila.donovan@boston.gov) or Keep current email (juliana.donovan@boston.gov, selected), and a consent checkbox"><p>3. <span>Choose an email</span></p></li>
+        </ol>
+      </div>
+
+      <dl class="facts">
+        <div><dt>Role</dt><dd>Lead UX/UI Designer</dd></div>
+        <div><dt>Timeline</dt><dd>1 month, launched in 2024</dd></div>
+        <div><dt>Team</dt><dd>Product, Project Management, HR, Content, Engineering</dd></div>
+        <div><dt>My contribution</dt><dd>Research, problem framing, user flows, interaction design, prototyping, usability testing, UI, accessibility, handoff</dd></div>
+      </dl>
+      <ul class="impact" aria-label="Impact">
+        <li><strong>1,000+</strong><span>employees have used the workflow</span></li>
+        <li><strong>~40 seconds</strong><span>to complete the update, down from weeks</span></li>
+        <li><strong>Self-service</strong><span>instead of a fragmented manual process</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container layout">
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#problem">The problem</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#system">Mapping the system</a></li>
+        <li><a href="#paths">Two workflows</a></li>
+        <li><a href="#wireframes">Wireframes</a></li>
+        <li><a href="#testing">Testing</a></li>
+        <li><a href="#final">Final design</a></li>
+        <li><a href="#result">Results</a></li>
+        <li><a href="#learned">What I learned</a></li>
+      </ol>
+    </nav>
+
+    <article>
+      <section id="overview" aria-labelledby="overview-h">
+        <p class="label" id="overview-h">A small decision with a big impact</p>
+        <blockquote class="quote">
+          <p>Updating a chosen name doesn't necessarily mean someone wants to change their email address.</p>
+          <p>Rather than making that assumption for employees, I designed the experience to give them a choice when their system configuration allows it.</p>
+        </blockquote>
+        <figure>
+          <div class="panel"><img class="screen" src="images/chosen-name/email.jpg" width="1440" height="960" alt="Email choice screen showing the chosen name with an Edit button, two options, Use new email (camila.donovan@boston.gov) or Keep current email (juliana.donovan@boston.gov, selected), and a consent checkbox"></div>
+          <figcaption>Employees choose between a new email that matches their chosen name or keeping their current one. Here, the employee keeps their current email.</figcaption>
+        </figure>
+        <div class="text">
+          <p>Employees previously had no simple way to update their chosen name across the City's internal systems. What should have been a straightforward change required manual requests, coordination across teams, and updates across multiple applications.</p>
+          <p>I led the end-to-end UX/UI design of a new self-service workflow within Access Boston, giving employees a faster and more transparent way to update their chosen name while accounting for differences across departments, systems, and identity providers.</p>
+        </div>
+      </section>
+
+      <section id="problem" aria-labelledby="problem-h">
+        <p class="label">The problem</p>
+        <h2 id="problem-h">A simple change had become a complex process.</h2>
+        <div class="text"><p>Before this project, employees who wanted to update their chosen name often had to navigate a manual process involving service desk requests, HR, application owners, and multiple internal systems.</p><p>Everything happened over email: employees created a ticket, then waited to hear back. A single name change could take <strong>weeks</strong>.</p></div>
+        <div class="two">
+          <div><h3>For employees</h3><ul>
+            <li>They didn't know where to start or which systems needed to be updated.</li>
+            <li>Changes could take time to propagate.</li>
+            <li>There was limited visibility into the status of their request.</li>
+            <li>New employees could have accounts created with a name they did not use.</li></ul></div>
+          <div><h3>For HR and IT</h3><ul>
+            <li>Requests required manual coordination.</li>
+            <li>Different systems had different requirements and ownership.</li>
+            <li>Changes were not always synchronized the same way across departments.</li></ul></div>
+        </div>
+        <div class="hmw"><p>The design challenge</p><p>How might we give employees a simple, predictable way to update their chosen name while accounting for different systems, permissions, and departmental constraints?</p></div>
+      </section>
+
+      <section id="research" aria-labelledby="research-h">
+        <p class="label">Understanding the current experience</p>
+        <h2 id="research-h">Rapid research to find where the process broke down.</h2>
+        <div class="text">
+          <p>Because the project had a short timeline, I used rapid qualitative research. I spoke with employees who had previously tried to change their name or email and asked them to walk through their experience from start to finish. I also worked with HR, IT, and other stakeholders to understand the operational and technical side.</p>
+        </div>
+        <div class="two">
+          <div><h3>Employees were doing the coordination themselves.</h3><p>People had to figure out which teams or systems to contact instead of having one place to start.</p></div>
+          <div><h3>There was little visibility into what was happening.</h3><p>Employees weren't sure whether a request had been processed or when changes would appear.</p></div>
+          <div><h3>The experience started too late for some new employees.</h3><p>Preferred names weren't consistently captured before accounts were created.</p></div>
+          <div><h3>The experience depended on the employee's systems.</h3><p>Not everyone had the same permissions, applications, or identity-provider configuration.</p></div>
+        </div>
+        <h3 style="margin-top:56px">Four core user needs</h3>
+        <ul class="cards">
+          <li><h3>Clarity</h3><p>Know what will change and what won't.</p></li>
+          <li><h3>Autonomy</h3><p>Make the change without unnecessary manual steps.</p></li>
+          <li><h3>Speed</h3><p>Complete the request quickly.</p></li>
+          <li><h3>Consistency</h3><p>See information reflected accurately across systems.</p></li>
+        </ul>
+      </section>
+
+      <section id="system" aria-labelledby="system-h">
+        <p class="label">Mapping the system</p>
+        <h2 id="system-h">The interface was simple. The system behind it wasn't.</h2>
+        <div class="text"><p>I mapped the complete workflow to understand what happened after an employee submitted a change: backend dependencies, system ownership, departmental differences, and potential points of failure. The map became a shared view for design, product, engineering, and HR.</p></div>
+        <figure>
+          <div class="panel"><img class="screen" src="images/chosen-name/workflow.jpg" width="2400" height="1440" alt="Workflow map for existing users with two paths. The main path goes from sign-in to a welcome screen, chosen name entry, a generated email with the chosen name, decisions to confirm the new email and update the name, then a confirmation screen and email. A second path for Boston Public Library and Boston Public Health Commission users updates the name only, with no email step."></div>
+          <figcaption>Workflow for existing users, including the separate path for Boston Public Library and Boston Public Health Commission employees. Internal meeting notes are blurred. <a href="images/chosen-name/workflow.jpg">Open full size</a></figcaption>
+        </figure>
+        <h3 style="margin-top:40px">What the map revealed</h3>
+        <ul class="tags">
+          <li>Multiple systems involved</li><li>Different employee and system configurations</li><li>Manual dependencies</li><li>Potential propagation delays</li>
+        </ul>
+        <div class="two">
+          <div><h3>How long will changes take to propagate?</h3><p>Employees needed realistic expectations about when their updated information would appear across applications.</p></div>
+          <div><h3>Where can the systems behave differently?</h3><p>Different employee groups had different configurations, so the same interaction couldn't always produce the same outcome. This changed the direction of the design.</p></div>
+        </div>
+      </section>
+
+      <section id="paths" aria-labelledby="paths-h">
+        <p class="label">Designing for different system realities</p>
+        <h2 id="paths-h">One experience, two honest paths.</h2>
+        <div class="text">
+          <p>It was tempting to create one universal workflow. But some employees could have their email updated automatically, while employees at organizations such as the Boston Public Library and the Boston Public Health Commission had different identity-provider and system constraints. Rather than hiding those differences, I designed two paths.</p>
+        </div>
+        <div class="two">
+          <div class="path"><span class="tag">Workflow A</span><h3>Automatic email update</h3><p>Where systems supported it, employees choose whether their email changes along with their chosen name.</p></div>
+          <div class="path"><span class="tag">Workflow B</span><h3>Email limitations</h3><p>Where systems didn't support it, the experience clearly explains the limitation and sets the right expectations.</p></div>
+        </div>
+      </section>
+
+      <section id="wireframes" aria-labelledby="wire-h">
+        <p class="label">From workflow to interface</p>
+        <h2 id="wire-h">Structure and logic first, visual design second.</h2>
+        <div class="text">
+          <p>I started with low-fidelity wireframes to focus on structure, decision points, and system logic before investing in visual design. They helped the team see where employees needed more context, which decisions needed to be explicit, where system differences had to be communicated, and how to handle edge cases.</p>
+          <p>Once the flows were aligned with stakeholders and engineering, I moved into high-fidelity design.</p>
+        </div>
+        <figure>
+          <div class="panel">
+            <div class="scroller" tabindex="0" role="region" aria-label="Low-fidelity wireframes, scrolls sideways">
+              <img src="images/chosen-name/wireframes.jpg" width="3600" height="1435" alt="Annotated low-fidelity wireframes for two flows. Main flow: sign in, Access Boston landing page, welcome screen, enter name, select email, confirmation. Second flow for Boston Public Library and Boston Public Health Commission users: sign in, landing page, welcome screen, enter name, confirmation, with no email step.">
+            </div>
+          </div>
+          <div class="hint"><span>Scroll sideways to see both flows.</span><a href="images/chosen-name/wireframes.jpg">Open full size</a></div>
+        </figure>
+        <h3 style="margin-top:48px">Design principles</h3>
+        <div class="two">
+          <div><h3>Make the experience predictable</h3><p>Employees understand what they're changing and what happens next.</p></div>
+          <div><h3>Give users control</h3><p>Employees decide whether to update their email when the system allows it.</p></div>
+          <div><h3>Reduce cognitive load</h3><p>The interface explains complexity instead of asking employees to understand the systems.</p></div>
+          <div><h3>Design accessibly</h3><p>Hierarchy, contrast, typography, interaction patterns, and responsive behavior were considered throughout.</p></div>
+        </div>
+      </section>
+
+      <section id="testing" aria-labelledby="test-h">
+        <p class="label">Usability testing</p>
+        <h2 id="test-h">Testing every step with real employees.</h2>
+        <div class="text">
+          <p>Before launch, about 10 City employees tested the workflow in a staging version of Access Boston. Each person had one task, <strong>update your chosen name</strong>, and followed a 24-step script covering the full journey: signing in, finding the link, reading the welcome screen, entering a name, choosing an email, submitting, then logging out and back in to check that the change had carried through.</p>
+          <p>For every step, participants marked whether it worked and added comments, then answered a short anonymous survey.</p>
+        </div>
+        <ul class="cards cards3">
+          <li><h3>About 10 participants</h3><p>City employees working through the real flow in a test environment.</p></li>
+          <li><h3>24-step script</h3><p>A pass or fail check and comments for each step, from sign-in to logging back in.</p></li>
+          <li><h3>Anonymous survey</h3><p>Participants shared how the experience felt once they finished.</p></li>
+        </ul>
+        <h3 style="margin-top:56px">What testing surfaced</h3>
+        <div class="two">
+          <div><h3>Button states weren't always right</h3><p>In testing, Continue was active before the name fields were complete. <strong>Fixed:</strong> Continue now waits until both fields are filled.</p></div>
+          <div><h3>A help link led to a dead end</h3><p>The Chosen Name Support Documentation link sent a participant to a Google sign-in page instead of the Access Boston help page. <strong>Fixed:</strong> the link now opens the help page directly.</p></div>
+          <div><h3>Email options didn't always match reality</h3><p>A participant with an older account saw a variation of their email as the "keep" option instead of the address they actually use. <strong>Fixed:</strong> the options now show each employee's actual current email.</p></div>
+          <div><h3>Changes took longer than expected to appear</h3><p>One participant logged back in after 5 minutes, and again an hour later, and still saw their old name in the banner. This confirmed what the system map predicted: employees need clear expectations about propagation time. <strong>Fixed:</strong> the update now appears as expected, and the confirmation screen tells employees to log out and back in to see it.</p></div>
+        </div>
+        <div class="text"><p>In the results I reviewed, 21 of 24 steps passed: participants found the link, understood the language on the welcome screen, and completed the submission. The issues clustered where the interface depended on other systems, which is exactly where the design needed to be most honest. <strong>Every issue found in testing was fixed before launch.</strong></p></div>
+      </section>
+
+      <section id="final" aria-labelledby="final-h">
+        <p class="label">The final experience</p>
+        <h2 id="final-h">Built into the Access Boston employee portal.</h2>
+
+        <div class="step">
+          <p class="num">01</p><h3>Easy to find, clear from the start</h3>
+          <div class="text"><p>Employees open <strong>Update Chosen Name</strong> from their account settings instead of filing a service request. The first screen explains what is changing, what isn't, and how a chosen name differs from a legal name.</p></div>
+          <figure><div class="panel"><img class="screen" src="images/chosen-name/welcome.jpg" width="1440" height="960" alt="Welcome to Chosen Name screen explaining what a chosen name is, what is changing (chosen name and email address), what is not changing (legal name), and a note that changes apply across City systems"></div></figure>
+        </div>
+
+        <div class="step">
+          <p class="num">02</p><h3>Clear choices</h3>
+          <div class="text"><p>Employees see their current name and enter the chosen first and last name they want to appear. Both fields are required, and a link to support documentation is always close by.</p></div>
+          <figure><div class="panel"><img class="screen" src="images/chosen-name/name.jpg" width="1440" height="960" alt="Update Chosen Name screen showing the current name, Juliana Donovan, with required fields for chosen first and last name, a support documentation link, and Clear and Continue buttons"></div></figure>
+        </div>
+
+        <div class="step">
+          <p class="num">03</p><h3>Clear expectations</h3>
+          <div class="text"><p>Where supported, employees choose between a new email that matches their chosen name or keeping their current one. A consent checkbox confirms they understand the change applies across City of Boston accounts.</p></div>
+          <figure><div class="panel"><img class="screen" src="images/chosen-name/email.jpg" width="1440" height="960" alt="Email choice screen showing the chosen name with an Edit button, two options, Use new email (camila.donovan@boston.gov) or Keep current email (juliana.donovan@boston.gov, selected), and a consent checkbox"></div></figure>
+        </div>
+
+        <div class="step">
+          <p class="num">04</p><h3>Immediate feedback</h3>
+          <div class="text"><p>After submitting, employees see a clear confirmation of their new chosen name and email, and receive a confirmation email. Because updates can take time to reach every system, the screen also asks them to log out and back in to see the change everywhere.</p></div>
+          <figure><div class="panel"><img class="screen" src="images/chosen-name/confirmation.jpg" width="1440" height="660" alt="Confirmation screen with a success message, Your chosen name and email has been updated, showing the new chosen name and email address, a note to log out and back in to see the update, and a Log out button"></div></figure>
+        </div>
+        <div class="step">
+          <p class="num">05</p><h3>Designed for different contexts</h3>
+          <div class="text"><p>The experience works on desktop and mobile, with accessibility considered throughout the interaction and UI design. On a phone, the same steps stack into a single column with full-width buttons, and Continue stays disabled until both name fields are filled.</p></div>
+          <figure><div class="panel">
+            <ul class="phones" aria-label="Mobile screens">
+              <li><img class="screen" src="images/chosen-name/mobile-name-empty.jpg" width="568" height="1230" alt="Mobile name entry with empty fields and a disabled Continue button"><p>Empty form, Continue disabled</p></li>
+              <li><img class="screen" src="images/chosen-name/mobile-name-filled.jpg" width="568" height="1230" alt="Mobile name entry filled in with Callan Donovan and Continue enabled"><p>Fields filled, Continue enabled</p></li>
+              <li><img class="screen" src="images/chosen-name/mobile-confirmation.jpg" width="566" height="826" alt="Mobile confirmation: your chosen name and email have been updated, showing Callan Donovan and the email address, with a note to log out and back in"><p>Confirmation</p></li>
+            </ul>
+          </div></figure>
+        </div>
+      </section>
+
+      <section id="result" aria-labelledby="result-h">
+        <p class="label">The result</p>
+        <h2 id="result-h">From a fragmented manual process to self-service.</h2>
+        <ul class="results">
+          <li><strong>1,000+</strong><p>employees have used the workflow to update their chosen name.</p></li>
+          <li><strong>Weeks to ~40 seconds</strong><p>From emails and tickets to a single self-service flow.</p></li>
+          <li><strong>Self-service</strong><p>Employees start the change in Access Boston, not through a manual request.</p></li>
+          <li><strong>Consistent</strong><p>Where supported, updates reach connected applications automatically.</p></li>
+        </ul>
+      </section>
+
+      <section id="learned" aria-labelledby="learn-h">
+        <p class="label">What I learned</p>
+        <h2 id="learn-h">Simple on the surface, honest underneath.</h2>
+        <div class="lessons">
+          <div><h3>The visible experience is only part of the product.</h3><p>Simplifying the interface didn't mean eliminating complexity. It meant handling it in the right place, so the interface could feel simple without pretending the process was simple.</p></div>
+          <div><h3>A single experience doesn't always mean a single workflow.</h3><p>Different paths for different system capabilities gave us a clearer, more honest experience than forcing everyone through the same one.</p></div>
+          <div><h3>Accessibility and empathy shaped the product, not just the UI.</h3><p>For something as personal as a chosen name, language, control, privacy, and clarity mattered as much as the visual interface.</p></div>
+        </div>
+        <p class="closing">The goal wasn't only to make the process faster. It was to make a personal change feel straightforward, respectful, and within the employee's control.</p>
+      </section>
+    </article>
+  </div>
+
+  <section class="next" aria-label="Next case study">
+    <div class="container"><p>Next case study</p><a href="index.html#work">Sanitation Scheduling</a></div>
+  </section>
+</main>
+
+<footer><div class="container"><p>© 2026 Juliana Donovan Agudelo</p><p><a href="mailto:jdonovanagudelo@gmail.com">jdonovanagudelo@gmail.com</a></p></div></footer>
+
+<script>
+  const links=[...document.querySelectorAll('.toc a')];
+  const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.removeAttribute('aria-current'));const a=map.get(e.target.id);if(a)a.setAttribute('aria-current','true');}})},{rootMargin:'-30% 0px -60% 0px'});
+    document.querySelectorAll('article section[id]').forEach(s=>io.observe(s));
+  }
+</script>
+</body>
+</html>

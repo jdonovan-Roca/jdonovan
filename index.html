@@ -257,33 +257,34 @@
   .contact .copied{margin:10px 0 0;min-height:1.5em;font-size:.95rem;color:var(--ink-2)}
   .contact .meta-links{margin-top:12px!important}
   @media (max-width:520px){nav.top{flex-direction:column;align-items:flex-start;gap:12px}nav.top .name{white-space:nowrap}}
+  .hero{padding-bottom:clamp(72px,9vw,120px)}
+  /* Contact: Midnight */
+  .contact{background:#1C2541!important;color:#fff!important}
+  .contact h2{color:#fff}
+  .contact h2 .l2{color:#AEB8D0!important}
+  .contact .cbody p,.contact .foot,.contact .copied{color:#C8CEDC!important}
+  .contact a,.contact .mail{color:#fff!important;text-decoration-color:#8FB0F0!important}
+  .contact a:hover{color:#fff!important}
+  .contact .copybtn{color:#fff;border-color:#fff;background:transparent}
+  .contact .copybtn:hover{background:rgba(255,255,255,.12)}
+  .contact .copybtn:active{background:rgba(255,255,255,.2)}
+  .contact .rule{background:#3A4670!important}
+  .contact :focus-visible{outline-color:#8FB0F0!important}
+  .contact .sun2{display:none}
 </style>
 </head>
 <body>
 
-<div class="picker">
-  <h1>Midnight + sunflower, with link and button states</h1>
-  <p>Links now use Andes blue instead of yellow. Every button and link has hover, focus, pressed and disabled states; see the states sheet at the bottom. Press "Show what's underneath" to see the systems behind each project.</p>
-
-
-</div>
-
 <div class="frame">
  <div class="site" id="site" data-palette="ink">
-  <div class="wrap"><nav class="top" aria-label="Preview navigation"><span class="name">Juliana Donovan Agudelo</span><ul><li><a href="#work">Work</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li></ul></nav></div>
+  <div class="wrap"><nav class="top" aria-label="Preview navigation"><span class="name">Juliana Donovan Agudelo</span><ul><li><a href="#work">Work</a></li><li><a href="about.html">About</a></li><li><a href="#contact">Contact</a></li></ul></nav></div>
 
   <header class="hero">
     <div class="wrap">
       <h2>Designing simple, accessible experiences for complex systems.</h2>
-      <p>Senior UX/UI Designer in Boston. For [X] years I've designed digital services for the City of Boston, from AI-powered search on Boston.gov to the tools residents and employees use every day.</p>
-      <div class="actions"><a class="btn btn-primary" href="#work" style="text-decoration:none!important;color:#fff">View my work</a><button class="btn btn-secondary reveal" type="button" aria-pressed="false" aria-controls="work">Show what's underneath</button></div>
+      <p>Senior UX/UI Designer in Boston. For 5 years I've designed digital services for the City of Boston, from AI-powered search on Boston.gov to the tools residents and employees use every day.</p>
+      <div class="actions"><a class="btn btn-primary" href="#work" style="text-decoration:none!important;color:#fff">View my work</a></div>
     </div>
-    <svg class="valley" viewBox="0 0 1200 180" preserveAspectRatio="none" aria-hidden="true">
-      <circle class="sun" cx="930" cy="70" r="38"/>
-      <path d="M0 120 C150 60 260 70 380 105 C520 145 640 40 800 70 C940 95 1060 60 1200 90 V180 H0Z" class="v1"/>
-      <path d="M0 150 C180 100 320 125 470 140 C620 155 760 95 920 120 C1050 140 1130 125 1200 130 V180 H0Z" class="v2"/>
-      <path d="M0 170 C200 145 380 160 600 165 C820 170 1000 150 1200 160 V180 H0Z" class="v3"/>
-    </svg>
   </header>
 
   <section class="work" id="work" aria-labelledby="work-h" data-layout="stack"><div class="wrap">
@@ -309,27 +310,15 @@
           <h4><a href="#work">AI-Powered Search</a></h4>
           <p class="sum">Making city information easier to find through AI-powered search on Boston.gov, while keeping answers connected to official sources.</p>
           <ul class="metrics"><li><span class="mv">+23.9 pts</span><span class="ml">more positive feedback</span></li><li><span class="mv">Site-wide</span><span class="ml">from a one-office pilot</span></li></ul>
-          <div class="under"><div><p class="lbl">Underneath</p><ul class="chips"><li>Large language model</li><li>Boston.gov content</li><li>Source links</li><li>No-answer states</li></ul></div></div>
           <p class="more tlink" aria-hidden="true">Read the case study</p>
         </div>
       </article>
       <article class="cs">
-        <div class="cs-img"><svg class="shot" viewBox="0 -40 560 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Placeholder screenshot: chosen name form with email choice">
-          <rect width="560" height="220" fill="#FFFFFF"/>
-          <rect x="40" y="30" width="140" height="12" rx="6" fill="#2B2F36"/>
-          <rect x="40" y="62" width="225" height="38" rx="6" fill="#F2F3F5" stroke="#D3D7DD"/>
-          <rect x="295" y="62" width="225" height="38" rx="6" fill="#F2F3F5" stroke="#D3D7DD"/>
-          <circle cx="52" cy="134" r="9" fill="#2B2F36"/><circle cx="52" cy="134" r="4" fill="#fff"/>
-          <rect x="70" y="129" width="220" height="10" rx="5" fill="#A3A9B3"/>
-          <circle cx="52" cy="160" r="9" fill="none" stroke="#2B2F36" stroke-width="2.5"/>
-          <rect x="70" y="155" width="180" height="10" rx="5" fill="#D3D7DD"/>
-          <rect x="400" y="168" width="120" height="34" rx="17" fill="#2B2F36"/>
-        </svg></div>
+        <div class="cs-img"><img class="shot" src="images/chosen-name/email.jpg" width="1440" height="960" alt="Chosen Name email choice screen: keep the current email or use a new one that matches the chosen name" style="width:auto;height:auto;max-width:100%;max-height:100%;border-radius:8px;border:1px solid var(--line);box-shadow:0 14px 32px -22px rgba(28,37,65,.4)"></div>
         <div class="cs-text">
           <h4><a href="chosen-name.html">Chosen Name</a></h4>
           <p class="sum">Turning a manual, multi-team process into a self-service workflow for City of Boston employees.</p>
           <ul class="metrics"><li><span class="mv">1,000+</span><span class="ml">employees served</span></li><li><span class="mv">~40 sec</span><span class="ml">to complete</span></li></ul>
-          <div class="under"><div><p class="lbl">Underneath</p><ul class="chips"><li>HR</li><li>IT</li><li>Identity providers</li><li>Email rules by department</li></ul></div></div>
           <p class="more tlink" aria-hidden="true">Read the case study</p>
         </div>
       </article>
@@ -350,7 +339,6 @@
           <h4><a href="#work">Sanitation Scheduling</a></h4>
           <p class="sum">Giving residents control of mattress and bulky-item pickups: book, reschedule, or cancel online.</p>
           <ul class="metrics"><li><span class="mv">10</span><span class="ml">languages</span></li><li><span class="mv">Citywide</span><span class="ml">launch</span></li></ul>
-          <div class="under"><div><p class="lbl">Underneath</p><ul class="chips"><li>Legacy 311 system</li><li>Address-based rules</li><li>Contractor routes</li><li>Sanitation policy</li></ul></div></div>
           <p class="more tlink" aria-hidden="true">Read the case study</p>
         </div>
       </article>
@@ -422,9 +410,9 @@
   <section class="about" id="about" aria-labelledby="about-h"><div class="wrap">
     <h3 id="about-h">About me</h3>
     <p>I'm a Senior UX/UI Designer based in Boston, originally from Medellín, Colombia. Most of my work starts with something that looks simple on the screen but isn't underneath.</p>
+    <p style="margin-top:20px"><a href="about.html" style="font-family:var(--head);font-weight:700">More about me</a></p>
   </div></section>
   <section class="contact" id="contact" aria-labelledby="contact-h">
-    <div class="sun2" aria-hidden="true"></div>
     <div class="wrap">
       <div class="grid2">
         <h2 id="contact-h"><span>Let’s work</span><span class="l2">together</span></h2>
@@ -445,16 +433,10 @@
 </div>
 
 
-<section class="states" aria-labelledby="states-h"><div class="panel">
-  <h2 id="states-h">Button and link states</h2>
-  <p>Every interactive element has the same five states. Focus is always a 3px Andes blue ring, so keyboard users can see where they are on any background.</p>
-  <div class="wrapx"><table><thead><tr><th scope="col">State</th><th scope="col">Primary button</th><th scope="col">Secondary button</th><th scope="col">Text link</th></tr></thead><tbody><tr><th scope="row">Default</th><td><span class="btn btn-primary " role="img" aria-label="Primary button, default">View my work</span></td><td><span class="btn btn-secondary " role="img" aria-label="Secondary button, default">Show what's underneath</span></td><td><span class="tlink ">View live project</span></td></tr><tr><th scope="row">Hover<small>Lighter navy · light tint · blue text with thicker underline</small></th><td><span class="btn btn-primary is-hover" role="img" aria-label="Primary button, hover">View my work</span></td><td><span class="btn btn-secondary is-hover" role="img" aria-label="Secondary button, hover">Show what's underneath</span></td><td><span class="tlink is-hover">View live project</span></td></tr><tr><th scope="row">Keyboard focus<small>3px Andes blue ring on every element</small></th><td><span class="btn btn-primary is-focus" role="img" aria-label="Primary button, focus">View my work</span></td><td><span class="btn btn-secondary is-focus" role="img" aria-label="Secondary button, focus">Show what's underneath</span></td><td><span class="tlink is-focus">View live project</span></td></tr><tr><th scope="row">Pressed<small>Darker and moves down 1px · toggle fills navy when on</small></th><td><span class="btn btn-primary is-active" role="img" aria-label="Primary button, pressed">View my work</span></td><td><span class="btn btn-secondary is-pressed" role="img" aria-label="Secondary button, toggled on">Hide what's underneath</span></td><td><span class="tlink is-active">View live project</span></td></tr><tr><th scope="row">Disabled<small>Grey and not clickable · no link</small></th><td><span class="btn btn-primary is-disabled" role="img" aria-label="Primary button, disabled">View my work</span></td><td><span class="btn btn-secondary is-disabled" role="img" aria-label="Secondary button, disabled">Show what's underneath</span></td><td><span class="tlink is-disabled">Not public yet</span></td></tr></tbody></table></div>
-</div></section>
+
 
 <script>
   const site=document.getElementById('site'),work=document.getElementById('work');
-  const btn=document.querySelector('.reveal');
-  btn.addEventListener('click',()=>{const on=btn.getAttribute('aria-pressed')!=='true';btn.setAttribute('aria-pressed',on);work.classList.toggle('shown',on);btn.textContent=on?"Hide what's underneath":"Show what's underneath";});
   const cp=document.querySelector('.contact .copybtn'),st=document.querySelector('.contact .copied');
   cp.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(cp.dataset.email);cp.textContent='Copied';st.textContent='Email address copied to your clipboard.';}catch(e){st.textContent='Copy didn\'t work here. The address is jdonovanagudelo@gmail.com.';}
     setTimeout(()=>{cp.textContent='Copy email';},2500);});

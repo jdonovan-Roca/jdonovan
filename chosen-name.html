@@ -129,7 +129,10 @@
   .next a{color:#fff;font-family:var(--head);font-weight:800;font-size:clamp(1.8rem,4vw,2.75rem);letter-spacing:-.03em;text-decoration-color:var(--accent);display:inline-block;margin-top:6px}
   .next a:hover{color:#fff;text-decoration-thickness:4px}
   .next :focus-visible{outline-color:var(--accent)}
-  footer{background:var(--warm);padding:28px 0;color:var(--ink-2);font-size:.95rem}
+  footer{background:var(--ink);border-top:1px solid #3A4670;padding:28px 0;color:#C8CEDC;font-size:.95rem}
+  footer a{color:#fff;text-decoration-color:#8FB0F0}
+  footer a:hover{color:#fff}
+  footer :focus-visible{outline-color:#8FB0F0}
   footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
   .cards.cards3{grid-template-columns:repeat(3,1fr)}
   @media (max-width:760px){.cards.cards3{grid-template-columns:1fr}}
@@ -138,6 +141,9 @@
   .phones img{border-radius:14px}
   .phones p{margin-top:12px;font-family:var(--head);font-weight:700;font-size:.95rem;text-align:center}
   @media (max-width:600px){.phones{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.phones p{font-size:.8rem}}
+  .mini{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;counter-reset:m}
+  .mini li{font-family:var(--head);font-weight:700;font-size:.88rem;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+  .mini li.hl{background:var(--ink);color:#fff;border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -146,7 +152,7 @@
 <div class="container">
   <nav class="top" aria-label="Main">
     <a class="name" href="index.html">Juliana Donovan Agudelo</a>
-    <ul><li><a href="index.html#work">Work</a></li><li><a href="index.html#about">About</a></li><li><a href="index.html#contact">Contact</a></li></ul>
+    <ul><li><a href="index.html#work">Work</a></li><li><a href="about.html">About</a></li><li><a href="index.html#contact">Contact</a></li></ul>
   </nav>
 </div>
 
@@ -274,11 +280,13 @@
         <p class="label">Designing for different system realities</p>
         <h2 id="paths-h">One experience, two honest paths.</h2>
         <div class="text">
-          <p>It was tempting to create one universal workflow. But some employees could have their email updated automatically, while employees at organizations such as the Boston Public Library and the Boston Public Health Commission had different identity-provider and system constraints. Rather than hiding those differences, I designed two paths.</p>
+          <p>It was tempting to create one universal workflow. But some employees could have their email updated automatically, while employees at organizations such as the Boston Public Library and the Boston Public Health Commission had different identity-provider and system constraints. Rather than showing everyone an option that wouldn't work for them, I designed two paths. The only difference is the email step.</p>
         </div>
         <div class="two">
-          <div class="path"><span class="tag">Workflow A</span><h3>Automatic email update</h3><p>Where systems supported it, employees choose whether their email changes along with their chosen name.</p></div>
-          <div class="path"><span class="tag">Workflow B</span><h3>Email limitations</h3><p>Where systems didn't support it, the experience clearly explains the limitation and sets the right expectations.</p></div>
+          <div class="path"><span class="tag">Workflow A</span><h3>Name and email</h3><p>Where systems supported it, employees choose whether their email changes along with their chosen name.</p>
+            <ol class="mini" aria-label="Workflow A steps"><li>Welcome</li><li>Chosen name</li><li class="hl">Email choice</li><li>Confirmation</li></ol></div>
+          <div class="path"><span class="tag">Workflow B</span><h3>Name only</h3><p>For Boston Public Library and Boston Public Health Commission employees, the email step doesn't appear. They update their chosen name and go straight to confirmation, so they're never offered a choice their system can't support.</p>
+            <ol class="mini" aria-label="Workflow B steps"><li>Welcome</li><li>Chosen name</li><li>Confirmation</li></ol></div>
         </div>
       </section>
 

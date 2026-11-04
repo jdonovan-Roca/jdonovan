@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sanitation Scheduling case study | Juliana Donovan Agudelo</title>
+<meta name="description" content="How I designed online scheduling, canceling, and rescheduling for Boston's mattress and bulky-item pickups.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1E21; --ink-2:#47484B; --bg:#F0F2F5; --surface:#FFFFFF; --warm:#F3F1ED;
+    --panel:#E4E6EB; --accent:#0866FF; --link:#0866FF; --link-hover:#0047BA; --line:#CED0D4; --tint:#E7F0FF;
+    --head:"Manrope",system-ui,sans-serif; --body:"Atkinson Hyperlegible Next",system-ui,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:var(--surface);line-height:1.65;font-size:1.0625rem}
+  img{max-width:100%;height:auto;display:block}
+  h1,h2,h3{font-family:var(--head);letter-spacing:-.02em;line-height:1.2;margin:0}
+  p{margin:0}
+  a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--link);text-decoration-thickness:2px;text-underline-offset:5px;transition:color .15s,text-decoration-thickness .15s}
+  a:hover{color:var(--link-hover);text-decoration-thickness:3px}
+  :focus-visible{outline:3px solid var(--link);outline-offset:4px;border-radius:2px}
+  .skip{position:absolute;left:16px;top:-60px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;z-index:10;text-decoration:none}
+  .skip:focus{top:16px;color:#fff}
+  .container{max-width:1120px;margin:0 auto;padding:0 32px}
+  @media (max-width:600px){.container{padding:0 20px}}
+
+  /* nav */
+  nav.top{display:flex;justify-content:space-between;align-items:center;padding:24px 0;gap:16px}
+  nav.top .name{font-family:var(--head);font-weight:800;text-decoration:none}
+  nav.top ul{list-style:none;display:flex;gap:24px;margin:0;padding:0}
+  @media (max-width:520px){nav.top{flex-direction:column;align-items:flex-start;gap:12px}}
+
+  /* hero */
+  .hero{padding:32px 0 0}
+  .back{display:inline-block;font-family:var(--head);font-weight:700;margin-bottom:40px}
+  .hero h1{font-size:clamp(2.3rem,5vw,3.75rem);font-weight:800;letter-spacing:-.035em;max-width:18ch}
+  .lede{margin-top:20px;font-size:clamp(1.15rem,1.6vw,1.3rem);color:var(--ink-2);max-width:54ch}
+  .panel{background:var(--panel);border-radius:20px;padding:clamp(16px,3.2vw,40px)}
+  .screen{border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 14px 32px -22px rgba(28,30,33,.4)}
+  .hero .panel{margin-top:48px}
+  .flow3{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,24px)}
+  .flow3 p{margin-top:14px;font-family:var(--head);font-weight:700;font-size:.98rem}
+  .flow3 span{color:var(--ink-2);font-weight:600}
+  @media (max-width:760px){.flow3{grid-template-columns:1fr}}
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin:48px 0 0;padding:0}
+  .facts dt{font-family:var(--head);font-weight:700;font-size:.92rem;color:var(--ink-2)}
+  .facts dd{margin:4px 0 0}
+  .impact{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin:40px 0 0;padding:32px 0 0;border-top:1px solid var(--line)}
+  .impact strong{display:block;font-family:var(--head);font-weight:800;font-size:clamp(1.8rem,3vw,2.3rem);letter-spacing:-.03em;line-height:1.15}
+  .impact span{color:var(--ink-2)}
+  @media (max-width:860px){.facts{grid-template-columns:1fr 1fr}.impact{grid-template-columns:1fr}}
+
+  /* body layout with table of contents */
+  .layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:64px;margin-top:clamp(72px,9vw,112px)}
+  .toc{position:sticky;top:24px;align-self:start}
+  .toc p{font-family:var(--head);font-weight:700;font-size:.92rem;color:var(--ink-2);margin-bottom:12px}
+  .toc ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--line)}
+  .toc a{display:block;padding:7px 0 7px 16px;margin-left:-2px;border-left:2px solid transparent;text-decoration:none;color:var(--ink-2);font-size:.98rem}
+  .toc a:hover{color:var(--ink);text-decoration:underline;text-decoration-color:var(--link)}
+  .toc a[aria-current="true"]{color:var(--ink);font-weight:700;border-left-color:var(--link)}
+  @media (max-width:1060px){.layout{grid-template-columns:1fr;gap:0}.toc{display:none}}
+
+  article section{padding:clamp(56px,7vw,88px) 0;border-top:1px solid var(--line)}
+  article section:first-child{border-top:0;padding-top:0}
+  .label{font-family:var(--head);font-weight:700;color:var(--ink-2);font-size:1rem;margin-bottom:10px}
+  h2{font-size:clamp(1.75rem,3.2vw,2.4rem);font-weight:800;max-width:24ch}
+  h3{font-size:1.2rem;font-weight:800}
+  .text{max-width:66ch;color:var(--ink-2);margin-top:20px}
+  .text p+p{margin-top:16px}
+  .text strong{color:var(--ink)}
+  figure{margin:40px 0 0}
+  figcaption{margin-top:14px;color:var(--ink-2);font-size:.95rem;max-width:70ch}
+
+  .quote{margin:0;padding-left:24px;border-left:4px solid var(--accent)}
+  .quote p:first-child{font-family:var(--head);font-weight:800;font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.25;letter-spacing:-.02em;color:var(--ink);max-width:28ch}
+  .quote p+p{margin-top:14px;color:var(--ink-2);max-width:60ch}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:32px 48px;margin-top:40px}
+  .two ul{margin:12px 0 0;padding-left:1.2em;color:var(--ink-2)}
+  .two li+li{margin-top:8px}
+  .two p{margin-top:8px;color:var(--ink-2)}
+  @media (max-width:700px){.two{grid-template-columns:1fr}}
+
+  .hmw{margin-top:48px;background:var(--ink);color:#fff;border-radius:16px;padding:clamp(24px,4vw,40px)}
+  .hmw p:first-child{font-family:var(--head);font-weight:700;color:#C9CCD1;font-size:.98rem}
+  .hmw p+p{margin-top:10px;font-family:var(--head);font-weight:800;font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.35;letter-spacing:-.015em}
+
+  .cards{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .cards li{border:1px solid var(--line);border-radius:14px;padding:20px}
+  .cards p{margin-top:6px;color:var(--ink-2);font-size:1rem}
+  @media (max-width:900px){.cards{grid-template-columns:1fr 1fr}}
+  @media (max-width:480px){.cards{grid-template-columns:1fr}}
+
+  .tags{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+  .tags li{background:var(--tint);border-radius:999px;padding:6px 14px;font-family:var(--head);font-weight:700;font-size:.95rem}
+
+  .path .tag{display:inline-block;font-family:var(--head);font-weight:700;font-size:.85rem;background:var(--tint);padding:4px 12px;border-radius:999px;margin-bottom:12px}
+  .path{border:1px solid var(--line);border-radius:16px;padding:24px}
+
+  .scroller{overflow-x:auto;border-radius:10px;background:#fff;border:1px solid var(--line)}
+  .scroller img{max-width:none;width:2100px}
+  .hint{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:14px;color:var(--ink-2);font-size:.95rem}
+
+  .step{margin-top:clamp(40px,5vw,56px)}
+  .step+.step{margin-top:clamp(56px,7vw,80px)}
+  .step .num{font-family:var(--head);font-weight:800;color:var(--ink-2)}
+  .step h3{font-size:1.5rem;margin-top:4px}
+  .step .text{margin-top:10px}
+  .step figure{margin-top:24px}
+
+  .results{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .results li{border-top:3px solid var(--ink);padding-top:14px}
+  .results strong{display:block;font-family:var(--head);font-weight:800;font-size:clamp(1.5rem,2.4vw,1.9rem);letter-spacing:-.03em;line-height:1.2}
+  .results p{margin-top:6px;color:var(--ink-2);font-size:1rem}
+  @media (max-width:900px){.results{grid-template-columns:1fr 1fr}}
+  @media (max-width:480px){.results{grid-template-columns:1fr}}
+
+  .lessons{display:grid;gap:32px;margin-top:32px;max-width:66ch}
+  .lessons p{margin-top:8px;color:var(--ink-2)}
+  .closing{margin-top:40px;font-family:var(--head);font-weight:800;font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.35;max-width:36ch}
+
+  .next{background:var(--ink);color:#fff;padding:clamp(56px,7vw,88px) 0;margin-top:clamp(40px,6vw,72px)}
+  .next p{color:#C9CCD1;font-family:var(--head);font-weight:700}
+  .next a{color:#fff;font-family:var(--head);font-weight:800;font-size:clamp(1.8rem,4vw,2.75rem);letter-spacing:-.03em;text-decoration-color:var(--accent);display:inline-block;margin-top:6px}
+  .next a:hover{color:#fff;text-decoration-thickness:4px}
+  .next :focus-visible{outline-color:var(--accent)}
+  footer{background:var(--ink);border-top:1px solid #3A3B3F;padding:28px 0;color:#C9CCD1;font-size:.95rem}
+  footer a{color:#fff;text-decoration-color:#8AB4FF}
+  footer a:hover{color:#fff}
+  footer :focus-visible{outline-color:#8AB4FF}
+  footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .cards.cards3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:760px){.cards.cards3{grid-template-columns:1fr}}
+  .two p strong{color:var(--ink)}
+  .phones{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,240px));gap:clamp(16px,3vw,40px);justify-content:center;align-items:start}
+  .phones img{border-radius:14px}
+  .phones p{margin-top:12px;font-family:var(--head);font-weight:700;font-size:.95rem;text-align:center}
+  @media (max-width:600px){.phones{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.phones p{font-size:.8rem}}
+  .mini{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;counter-reset:m}
+  .mini li{font-family:var(--head);font-weight:700;font-size:.88rem;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+  .mini li.hl{background:var(--ink);color:#fff;border-color:var(--ink)}
+  /* interactions */
+  nav.top a:hover{color:var(--link-hover)}
+  .toc a{transition:color .15s,border-color .15s,background-color .15s}
+  @media (hover:hover){.toc a:hover{background:var(--panel);border-left-color:#8A8D91}}
+  .toc a:active{background:#DADDE3}
+  .scroller:focus-visible{outline:3px solid var(--link);outline-offset:4px}
+  .back{transition:color .15s}
+
+  /* ---- Palette update: AAA ---- */
+  .btn-primary,a.btn-primary{background:#0047BA!important;border-color:#0047BA!important;color:#fff!important}
+  .btn-primary:hover,a.btn-primary:hover{background:#003A99!important;border-color:#003A99!important}
+  .btn-primary:active,a.btn-primary:active{background:#002E7A!important;border-color:#002E7A!important}
+  .metrics li:first-child .mv,.impact li:first-child strong,.impact div:first-child strong{box-shadow:inset 0 -.32em 0 color-mix(in srgb,#0866FF 35%,transparent)!important}
+  .toc a[aria-current="true"]{border-left-color:#0866FF!important}
+  .quote,.pull{border-left-color:#0866FF!important}
+  .tag.inprog,.tag:not(.plain){}
+
+  /* ---- Impact tiles ---- */
+  .metrics,.impact,.results{list-style:none;padding:0;display:grid!important;gap:12px!important}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:28px!important;max-width:460px}
+  .metrics li,.impact li,.results li{position:relative;background:#F0F2F5;border:0!important;border-radius:16px;padding:20px 20px 18px 24px!important;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+  .metrics li::before,.impact li::before,.results li::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#0866FF}
+  .metrics li:nth-child(2)::before,.impact li:nth-child(2)::before,.results li:nth-child(2)::before{background:#0866FF}
+  .impact li:nth-child(3)::before,.results li:nth-child(3)::before{background:#0866FF}
+  .results li:nth-child(4)::before{background:#1C1E21}
+  .metrics .mv,.impact strong,.results strong{font-family:var(--head);font-weight:800;font-size:clamp(1.75rem,2.6vw,2.25rem)!important;letter-spacing:-.03em;line-height:1.1;color:#1C1E21;box-shadow:none!important}
+  .metrics .ml,.impact span,.results p{color:#47484B;font-size:.98rem;margin:0!important;line-height:1.45}
+  .impact{grid-template-columns:repeat(3,minmax(0,1fr))!important;border-top:0!important;padding-top:0!important;margin-top:40px!important}
+  .results{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .impact strong,.results strong{display:block}
+  @media (max-width:900px){.results{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+  @media (max-width:640px){.impact,.results{grid-template-columns:1fr!important}}
+  .metrics li:first-child .mv,.impact li:first-child strong,.results li:first-child strong,.impact div:first-child strong{box-shadow:none!important}
+  .metrics .mv,.impact strong{white-space:nowrap}
+  @media (max-width:600px){.metrics .mv,.impact strong,.results strong{font-size:1.5rem!important}.metrics li{padding:16px 14px 14px 18px!important}}
+  .results{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  @media (max-width:640px){.results{grid-template-columns:1fr!important}}
+
+  /* ---- One accent only: blue ---- */
+  .metrics li::before,.impact li::before,.results li::before,
+  .metrics li:nth-child(n)::before,.impact li:nth-child(n)::before,.results li:nth-child(n)::before{background:#0866FF!important}
+  .toc a[aria-current="true"]{border-left-color:#0866FF!important}
+  .quote,.pull{border-left-color:#0866FF!important}
+  .other .tag,.tag{background:#E7F0FF!important;color:#0047BA!important}
+  .pair2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .pair3{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:16px;align-items:start}
+  .pair2 figure,.pair3 figure{margin-top:24px}
+  @media (max-width:760px){.pair2,.pair3{grid-template-columns:1fr}}
+  .hero .live2{position:static}
+  .ext{width:14px;height:14px;flex:none}
+  .live2{display:inline-flex;align-items:center;gap:6px;font-family:var(--head);font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:#0866FF;text-decoration-thickness:2px;text-underline-offset:5px}
+  .live2:hover{color:#0047BA;text-decoration-thickness:4px}
+  .carts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .carts p{margin-top:10px;font-family:var(--head);font-weight:700;font-size:.95rem}
+  @media (max-width:640px){.carts{grid-template-columns:1fr}}
+  .phones.phones4{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none}
+  @media (max-width:760px){.phones.phones4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="container">
+  <nav class="top" aria-label="Main">
+    <a class="name" href="index.html">Juliana Donovan Agudelo</a>
+    <ul><li><a href="index.html#work">Work</a></li><li><a href="about.html">About</a></li><li><a href="index.html#contact">Contact</a></li></ul>
+  </nav>
+</div>
+
+<main id="main">
+  <header class="hero">
+    <div class="container">
+      <a class="back" href="index.html#work">Back to all work</a>
+      <h1>Giving residents control of specialty waste pickups</h1>
+      <p class="lede">Redesigning how Boston residents book, cancel, and reschedule mattress and bulky-item collection online.</p>
+      <p style="margin-top:20px"><a class="live2" href="https://www.boston.gov/departments/public-works/mattress-recycling#/mattress" aria-label="Sanitation Scheduling live on Boston.gov (opens Boston.gov)">View live project<svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
+
+      <div class="panel">
+        <ol class="flow3" aria-label="Booking in three screens">
+          <li><img class="screen" src="images/sanitation/items.jpg" width="695" height="1105" alt="Step 1 of 4, Items to collect: the address at the top, a four-step progress tracker, a note about the ten-item yearly limit, counters for each mattress and box spring size, and a confirmation checkbox"><p>1. <span>Choose items</span></p></li>
+          <li><img class="screen" src="images/sanitation/date.jpg" width="520" height="910" alt="Step 2 of 4, Select a date: a note about when to put items out, and a calendar where only available dates are highlighted"><p>2. <span>Pick an available date</span></p></li>
+          <li><img class="screen" src="images/sanitation/confirmation.jpg" width="460" height="430" alt="Appointment confirmed: a confirmation code, a reminder about when to put items out, a Cancel appointment link, and a Done button"><p>3. <span>Get a confirmation</span></p></li>
+        </ol>
+      </div>
+
+      <dl class="facts">
+        <div><dt>Role</dt><dd>Lead UX/UI Designer (the only designer on the team)</dd></div>
+        <div><dt>Timeline</dt><dd>3 months, launched in 2023</dd></div>
+        <div><dt>Team</dt><dd>Project manager, 2 engineers, Sanitation and policy stakeholders</dd></div>
+        <div><dt>My contribution</dt><dd>Discovery, service blueprinting, user flows, wireframes, prototyping, usability testing, UI, accessibility</dd></div>
+      </dl>
+      <ul class="impact" aria-label="Impact">
+        <li><strong>Self-service</strong><span>book, cancel, and reschedule online for the first time</span></li>
+        <li><strong>10 languages</strong><span>multilingual from launch</span></li>
+        <li><strong>3 services</strong><span>mattresses, bulky items, and recycling carts on one pattern</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container layout">
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#problem">The problem</a></li>
+        <li><a href="#service">Mapping the service</a></li>
+        <li><a href="#flow">User flow</a></li>
+        <li><a href="#wireframes">Wireframes</a></li>
+        <li><a href="#testing">Testing</a></li>
+        <li><a href="#final">Final design</a></li>
+        <li><a href="#scale">Built to scale</a></li>
+        <li><a href="#result">Results</a></li>
+        <li><a href="#learned">What I learned</a></li>
+      </ol>
+    </nav>
+
+    <article>
+      <section id="overview" aria-labelledby="overview-h">
+        <p class="label" id="overview-h">A small decision with a big impact</p>
+        <blockquote class="quote">
+          <p>Residents shouldn't find out halfway through a booking that their address doesn't qualify.</p>
+          <p>I put the address check first, so eligibility, limits, and rules are clear before anyone picks an item or a date.</p>
+        </blockquote>
+        <figure><div class="panel"><img class="screen" src="images/sanitation/address.jpg" width="800" height="410" alt="Schedule a mattress pickup start screen: a short explanation of the service and its ten-item yearly limit, a link to a form for addresses that can’t be found, and an address field with an example"></div><figcaption>The first screen asks for an address, and explains the service and its limits up front.</figcaption></figure>
+        <div class="text">
+          <p>The City of Boston offers residents scheduled pickups for mattresses and bulky items such as appliances. The existing scheduling tool was built into the City's legacy 311 system: residents could book online, but couldn't cancel or reschedule, and the rules behind available dates were invisible.</p>
+          <p>As the only designer on the team, I led the end-to-end design of a new scheduling experience on Boston.gov, from discovery through a citywide launch in 2023, working with a project manager, two engineers, and Department of Sanitation and policy stakeholders.</p>
+        </div>
+      </section>
+
+      <section id="problem" aria-labelledby="problem-h">
+        <p class="label">The problem</p>
+        <h2 id="problem-h">Booking a pickup was possible. Managing one wasn't.</h2>
+        <div class="two">
+          <div><h3>For residents</h3><ul>
+            <li>There was no way to cancel or reschedule an appointment online.</li>
+            <li>Available dates depended on rules tied to each address and the City's pickup schedule, rules residents couldn't see.</li>
+            <li>Mattress pickups had a long backlog, with the next available date often more than a month away.</li></ul></div>
+          <div><h3>For the Department of Sanitation</h3><ul>
+            <li>Contractors sometimes arrived at an address to find no items out for pickup.</li>
+            <li>Reporting on missed pickups was inconsistent.</li>
+            <li>Staff had limited visibility into scheduling and collection status.</li></ul></div>
+        </div>
+        <div class="text"><p>This project focused on the resident experience. Staff reporting is handled in a separate internal tool.</p></div>
+        <div class="hmw"><p>The design challenge</p><p>How might we give residents more control over specialty waste pickups while making the service more reliable and easier for the City to manage?</p></div>
+      </section>
+
+      <section id="service" aria-labelledby="service-h">
+        <p class="label">Mapping the service</p>
+        <h2 id="service-h">Understanding the system behind every pickup.</h2>
+        <div class="text"><p>Before designing screens, I mapped the end-to-end service and facilitated a service blueprint session with a developer. The blueprint connects what residents do (learning about the service, scheduling, preparing for pickup) with what happens behind the scenes: staff actions, contractors, databases, and the policies that shape each step.</p>
+          <p>I also worked directly with Department of Sanitation staff to understand operational requirements, recurring problems, and the rules behind the service.</p></div>
+        <figure>
+          <div class="panel"><div class="scroller" tabindex="0" role="region" aria-label="Service blueprint, scrolls sideways"><img src="images/sanitation/blueprint.jpg" width="3000" height="976" alt="Future-state service blueprint across four phases: learning, scheduling, mattress pickup, and mattress end of life. Rows show resident actions, touchpoints, employee front-stage and back-stage actions, additional actors, technology, and open questions."></div></div>
+          <div class="hint"><span>Scroll sideways to see all four phases. Participant names are blurred.</span><a href="images/sanitation/blueprint.jpg">Open full size</a></div>
+        </figure>
+        <h3 style="margin-top:40px">What we uncovered</h3>
+        <ul class="tags"><li>Hidden, address-based rules</li><li>No way to cancel online</li><li>Missed pickups</li><li>Legacy 311 dependencies</li></ul>
+        <div class="text"><p>The takeaway: a better booking form alone wouldn't fix the service. The experience had to reflect the scheduling rules and operational realities behind every pickup.</p></div>
+      </section>
+
+      <section id="flow" aria-labelledby="flow-h">
+        <p class="label">User flow</p>
+        <h2 id="flow-h">One clear path, with honest exits.</h2>
+        <div class="text"><p>The flow starts with an address check. Residents whose address doesn't qualify find out immediately, with an explanation. Everyone else moves through four steps, can go back to edit any of them, and can cancel later from their confirmation.</p></div>
+        <figure><div class="panel"><img class="screen" src="images/sanitation/user-flow.jpg" width="2600" height="1306" alt="User flow for scheduling a mattress or bulky-item collection: enter an address, then items to collect, select a date, enter contact information, review and submit, and confirmation, with confirmation, reminder, and cancellation emails. Branches cover addresses that don’t qualify, editing a section, and canceling an appointment."></div><figcaption>The scheduling flow, including confirmation and reminder emails and the cancel path. <a href="images/sanitation/user-flow.jpg">Open full size</a></figcaption></figure>
+        <h3 style="margin-top:48px">Key design decisions</h3>
+        <div class="two">
+          <div><h3>Address first</h3><p>Checking eligibility up front means residents only see services and dates that actually apply to them.</p></div>
+          <div><h3>Rules where they matter</h3><p>The ten-item yearly limit, the curb-timing rule, and the condition of items appear at the exact step where they affect a decision.</p></div>
+          <div><h3>Only available dates</h3><p>The calendar highlights the dates residents can actually book, so nobody picks a date that will be rejected.</p></div>
+          <div><h3>Control after booking</h3><p>A confirmation code, reminder emails, and a Cancel appointment link let residents change their plans without calling.</p></div>
+        </div>
+      </section>
+
+      <section id="wireframes" aria-labelledby="wire-h">
+        <p class="label">Wireframes</p>
+        <h2 id="wire-h">Two flows: booking and canceling.</h2>
+        <div class="text"><p>I translated the flow into wireframes for both journeys: booking (Flow 1) and canceling (Flow 2). Dedicated "limitations" screens explain to residents why their address doesn't qualify, instead of leaving them at a dead end.</p></div>
+        <figure>
+          <div class="panel"><div class="scroller" tabindex="0" role="region" aria-label="Wireframes, scrolls sideways"><img src="images/sanitation/wireframes.jpg" width="3600" height="1323" alt="Wireframes for Flow 1, booking: landing page, enter address, items to collect, select a date, contact information, review, and confirmation, plus two limitations screens for addresses that don’t qualify. Flow 2, canceling: cancel appointment and canceled confirmation."></div></div>
+          <div class="hint"><span>Scroll sideways to see both flows.</span><a href="images/sanitation/wireframes.jpg">Open full size</a></div>
+        </figure>
+      </section>
+
+      <section id="testing" aria-labelledby="test-h">
+        <p class="label">Usability testing</p>
+        <h2 id="test-h">Testing both flows with residents.</h2>
+        <div class="text"><p>I facilitated usability testing with <strong>8 participants for each workflow</strong>, booking and canceling, and reviewed the experience with internal stakeholders to validate policy and operational requirements.</p></div>
+        <ul class="cards cards3">
+          <li><h3>Find the right service</h3><p>Enter an address and understand what's eligible.</p></li>
+          <li><h3>Book a pickup</h3><p>Choose items, pick a date, and submit.</p></li>
+          <li><h3>Manage it</h3><p>Understand the confirmation, then cancel or reschedule.</p></li>
+        </ul>
+        <h3 style="margin-top:48px">What we learned and changed</h3>
+        <div class="two">
+          <div><h3>Unavailable dates needed explaining</h3><p>I clarified date-selection behavior so residents understand why only some dates are offered.</p></div>
+          <div><h3>Managing an appointment had to be obvious</h3><p>I simplified the cancel and reschedule interactions and made them easy to find from the confirmation.</p></div>
+          <div><h3>Preparation instructions were easy to miss</h3><p>The curb-timing rule now appears on the date step, the review step, and the confirmation.</p></div>
+          <div><h3>Rules needed plain language</h3><p>I improved helper text and inline explanations for eligibility, limits, and the condition of items.</p></div>
+        </div>
+      </section>
+
+      <section id="final" aria-labelledby="final-h">
+        <p class="label">The final experience</p>
+        <h2 id="final-h">Online booking, in four clear steps.</h2>
+
+        <div class="step"><p class="num">01</p><h3>Start with an address</h3>
+          <div class="text"><p>Residents enter their Boston address first. The page explains the service and its ten-item yearly limit, and offers a form for anyone whose address can't be found.</p></div>
+          <figure><div class="panel"><img class="screen" src="images/sanitation/address.jpg" width="800" height="410" alt="Address entry screen with a short explanation of the service, the ten-item limit, and a link to a fallback form"></div></figure></div>
+
+        <div class="step"><p class="num">02</p><h3>Choose items, with the rules in view</h3>
+          <div class="text"><p>A four-step tracker shows progress. Residents add items with simple counters, see the yearly limit right above them, and confirm the items are in good condition before continuing.</p></div>
+          <figure><div class="panel"><img class="screen" src="images/sanitation/items.jpg" width="695" height="1105" alt="Items to collect step with the address and an Edit link, a progress tracker, a yearly limit note, item counters, and a checkbox confirming items are not soiled or infested" style="max-width:560px;margin:0 auto"></div></figure></div>
+
+        <div class="step"><p class="num">03</p><h3>Pick a date that's actually available</h3>
+          <div class="text"><p>Only bookable dates are highlighted. A note above the calendar explains when to put items out: after 5 p.m. the night before, and before 6 a.m. on pickup day.</p></div>
+          <figure><div class="panel"><img class="screen" src="images/sanitation/date.jpg" width="520" height="910" alt="Select a date step: a note about when to put items out, and a calendar for March 2024 with seven available dates highlighted" style="max-width:560px;margin:0 auto"></div></figure></div>
+
+        <div class="step"><p class="num">04</p><h3>Review everything, and edit safely</h3>
+          <div class="text"><p>The review step shows every answer with its own Edit link. Changing the address restarts the booking, so a warning explains that first, instead of silently erasing what the resident entered.</p></div>
+          <div class="pair2"><figure><div class="panel"><img class="screen" src="images/sanitation/review.jpg" width="520" height="540" alt="Review information step with a curb-timing reminder and cards for address, items to collect, and date, each with an Edit link"></div></figure><figure><div class="panel"><img class="screen" src="images/sanitation/edit-warning.jpg" width="520" height="540" alt="Edit address? dialog warning that editing the address will erase the information entered, with Cancel and Edit buttons"></div></figure></div></div>
+
+        <div class="step"><p class="num">05</p><h3>Confirmation, then control</h3>
+          <div class="text"><p>Residents get a confirmation code, a confirmation email, and reminders before pickup. If plans change, they can cancel from the confirmation, confirm their choice, and reschedule right away.</p></div>
+          <div class="pair3"><figure><div class="panel"><img class="screen" src="images/sanitation/confirmation.jpg" width="460" height="430" alt="Appointment confirmed with a confirmation code, curb-timing reminder, Cancel appointment link, and Done button"></div></figure><figure><div class="panel"><img class="screen" src="images/sanitation/cancel-warning.jpg" width="520" height="360" alt="Cancel appointment dialog asking whether to cancel the mattress collection appointment, with No and Yes buttons"></div></figure><figure><div class="panel"><img class="screen" src="images/sanitation/canceled.jpg" width="390" height="270" alt="Canceled message with Reschedule and Done buttons"></div></figure></div></div>
+
+        <div class="step"><p class="num">06</p><h3>Designed for phones and every resident</h3>
+          <div class="text"><p>Most residents book from their phones. On mobile, the same steps stack into a single column with a compact progress bar and full-width buttons. The experience meets WCAG 2.1 AA, and residents can switch languages from any step.</p></div>
+          <figure><div class="panel"><ul class="phones phones4" aria-label="Mobile screens">
+            <li><img class="screen" src="images/sanitation/m-items.jpg" width="576" height="1250" alt="Mobile step 1 of 4, Items to collect: the address card, a progress bar, the ten-item note, and item counters (address blurred)"><p>Choose items</p></li>
+            <li><img class="screen" src="images/sanitation/m-date.jpg" width="576" height="1250" alt="Mobile step 2 of 4, Select a date: the curb-timing note and a calendar with available dates highlighted, with full-width Back and Continue buttons"><p>Pick a date</p></li>
+            <li><img class="screen" src="images/sanitation/m-contact.jpg" width="576" height="1250" alt="Mobile step 3 of 4, Contact information, with the language selector set to Portuguese (address blurred)"><p>Add contact details</p></li>
+            <li><img class="screen" src="images/sanitation/m-confirmation.jpg" width="576" height="1246" alt="Mobile Appointment confirmed screen with a confirmation code, curb-timing reminder, and Cancel appointment link, with the language selector set to Somali"><p>Get a confirmation</p></li>
+          </ul></div></figure></div>
+      </section>
+
+      <section id="scale" aria-labelledby="scale-h">
+        <p class="label">Built to scale</p>
+        <h2 id="scale-h">One pattern, three City services.</h2>
+        <div class="text"><p>I designed the flow as a reusable pattern rather than a one-off form. The same steps, components, and logic now power more than mattress pickups.</p></div>
+        <div class="two">
+          <div class="path"><span class="tag">Same flow</span><h3>Bulky-item pickup</h3><p>Uses the identical workflow. Only the items on the first step change, from mattress sizes to appliances and other large items.</p></div>
+          <div class="path"><span class="tag">Reused in 2025</span><h3>Recycling cart requests</h3><p>At the end of 2025, I designed a new service for requesting recycling carts by reusing the same components and logic, adapted to five steps. It's now live on Boston.gov.</p><p style="margin-top:14px"><a class="live2" href="https://www.boston.gov/departments/public-works/recycling-boston#/recycle_carts" aria-label="Recycling cart requests live on Boston.gov (opens Boston.gov)">View live project<svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p></div>
+        </div>
+        <figure>
+          <div class="panel"><ul class="carts" aria-label="Recycling cart request screens">
+            <li><img class="screen" src="images/sanitation/cart-type.jpg" width="756" height="885" alt="Recycle carts, step 1 of 5: the same address card and progress tracker, a note about the yearly limit, and three request types: new cart, broken cart swap, or cart pickup only"><p>Same pattern, new request types</p></li>
+            <li><img class="screen" src="images/sanitation/cart-date.jpg" width="756" height="765" alt="Recycle carts, step 3 of 5: Select your preferred date, with a note that requests take about 10 business days, the resident's trash day, and three upcoming Wednesdays to choose from"><p>Dates follow the trash day</p></li>
+            <li><img class="screen" src="images/sanitation/cart-location.jpg" width="536" height="385" alt="Where will we find your cart? options, with Public Alley selected and a required Street name field appearing underneath"><p>Fields appear only when needed</p></li>
+            <li><img class="screen" src="images/sanitation/cart-review.jpg" width="484" height="395" alt="Recycle carts, step 5 of 5: Review and submit, with a note about the 10-business-day timeframe and cards for address and request type, each with an Edit link"><p>The same review step, reused</p></li>
+          </ul></div>
+          <figcaption>The recycling cart request flow reuses the address card, progress tracker, notes, and review step, while adapting the logic: dates follow the resident's trash day. <a href="https://www.boston.gov/departments/public-works/recycling-boston#/recycle_carts">See it live</a></figcaption>
+        </figure>
+      </section>
+
+      <section id="result" aria-labelledby="result-h">
+        <p class="label">The result</p>
+        <h2 id="result-h">A citywide self-service pattern.</h2>
+        <ul class="results">
+          <li><strong>Control after booking</strong><p>Residents can cancel and reschedule pickups online, without calling.</p></li>
+          <li><strong>Rules made visible</strong><p>Eligibility, limits, and available dates are explained in the interface.</p></li>
+          <li><strong>Built for everyone</strong><p>Responsive, WCAG 2.1 AA, and available in 10 languages.</p></li>
+          <li><strong>Phone still works</strong><p>Residents can still call 311. The online option was added, not forced.</p></li>
+        </ul>
+      </section>
+
+      <section id="learned" aria-labelledby="learn-h">
+        <p class="label">What I learned</p>
+        <h2 id="learn-h">Rules belong in the interface, not behind it.</h2>
+        <div class="lessons">
+          <div><h3>Bring operational partners in early.</h3><p>The hardest problems, such as missed pickups and invisible scheduling rules, weren't visible from the booking screen. Blueprinting the service with a developer and working with Sanitation staff surfaced them before I started designing.</p></div>
+          <div><h3>Testing turns rules into language.</h3><p>Scheduling rules made sense to the City, not to residents. Testing showed where they caused confusion and helped me translate them into explanations people could act on.</p></div>
+          <div><h3>Design patterns, not just pages.</h3><p>Building the flow from reusable components meant the City could launch a new service, recycling carts, without starting from scratch.</p></div>
+          <div><h3>Add a channel without removing one.</h3><p>Moving a service online works best when it gives people a better option, while the phone line stays open for anyone who needs it.</p></div>
+        </div>
+      </section>
+    </article>
+  </div>
+
+  <section class="next" aria-label="Next case study">
+    <div class="container"><p>Next case study</p><a href="chosen-name.html">Chosen Name</a></div>
+  </section>
+</main>
+
+<footer><div class="container"><p>© 2026 Juliana Donovan Agudelo</p><p><a href="mailto:jdonovanagudelo@gmail.com">jdonovanagudelo@gmail.com</a></p></div></footer>
+
+<script>
+  const links=[...document.querySelectorAll('.toc a')];
+  const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.removeAttribute('aria-current'));const a=map.get(e.target.id);if(a)a.setAttribute('aria-current','true');}})},{rootMargin:'-30% 0px -60% 0px'});
+    document.querySelectorAll('article section[id]').forEach(s=>io.observe(s));
+  }
+</script>
+</body>
+</html>

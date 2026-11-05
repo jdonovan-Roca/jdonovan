@@ -370,6 +370,88 @@
   .toc a[aria-current="true"]{border-left-color:#0866FF!important}
   .quote,.pull{border-left-color:#0866FF!important}
   .other .tag,.tag{background:#E7F0FF!important;color:#0047BA!important}
+  /* Other projects: consistent framed screenshots */
+  .other .pimg.photo{background:#E4E6EB;padding:20px 20px 0;aspect-ratio:16/10;display:block;border-bottom:1px solid var(--line)}
+  .other .pimg.photo img{width:100%;height:100%;object-fit:cover;object-position:left top;border-radius:8px 8px 0 0;border:1px solid #CED0D4;border-bottom:0;box-shadow:0 10px 24px -16px rgba(28,30,33,.45);background:#fff}
+  @media (hover:hover){.other .pcard:has(.live):hover .pimg.photo img{transform:translateY(-4px)}}
+
+  /* ===== Selected work: editorial layout ===== */
+  .vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .work{background:#fff!important;padding:clamp(56px,7vw,96px) 0 clamp(40px,5vw,64px)!important}
+  .work h3#work-h{font-size:clamp(1.75rem,3vw,2.25rem);font-weight:800;letter-spacing:-.02em;margin:0 0 clamp(8px,2vw,16px)}
+  .projs{display:block}
+  .proj{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"text media" "metrics metrics";column-gap:clamp(40px,6vw,88px);row-gap:clamp(28px,3.5vw,40px);align-items:center;padding:clamp(48px,7vw,96px) 0;border-top:1px solid #CED0D4}
+  .proj:first-child{border-top:0;padding-top:clamp(24px,3vw,40px)}
+  .proj.flip{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"media text" "metrics metrics"}
+  .p-text{grid-area:text;max-width:46ch}
+  .p-media{grid-area:media}
+  .p-metrics{grid-area:metrics}
+  .proj h4{margin:0;font-family:var(--head);font-weight:800;font-size:clamp(1.75rem,3vw,2.5rem);line-height:1.1;letter-spacing:-.03em;color:#1C1E21}
+  .p-desc{margin:16px 0 0;font-size:clamp(1.05rem,1.3vw,1.15rem);line-height:1.6;color:#47484B}
+  .p-links{display:flex;flex-wrap:wrap;align-items:center;gap:4px 28px;margin-top:24px}
+  .pl{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-family:var(--head);font-weight:700;font-size:1rem;color:#1C1E21!important;text-decoration:underline;text-decoration-color:#0866FF!important;text-decoration-thickness:2px!important;text-underline-offset:6px;transition:color .15s,text-decoration-thickness .15s}
+  .pl:hover{color:#0047BA!important;text-decoration-thickness:3px!important}
+  .pl:active{color:#002E7A!important}
+  .pl:focus-visible{outline:3px solid #0866FF!important;outline-offset:3px;border-radius:2px}
+  .pl svg{width:15px;height:15px;flex:none}
+  .pl-main .arr{transition:transform .15s}
+  .pl-main:hover .arr{transform:translateX(3px)}
+  .pl-note{margin:0;min-height:44px;display:inline-flex;align-items:center;font-size:.95rem;color:#47484B}
+  .p-media{display:block;aspect-ratio:16/11;background:#F0F2F5;border-radius:8px;padding:clamp(18px,2.6vw,32px) clamp(18px,2.6vw,32px) 0;overflow:hidden}
+  .p-media img{display:block;width:100%;height:100%;object-fit:cover;object-position:left top;border:1px solid #CED0D4;border-bottom:0;border-radius:6px 6px 0 0;background:#fff;transition:transform .3s ease}
+  .proj:hover .p-media img{transform:translateY(-6px)}
+  .p-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:0;padding-top:24px;border-top:1px solid #CED0D4}
+  .p-metrics div{margin:0}
+  .p-metrics dd{margin:0;display:flex;flex-direction:column;gap:4px;padding-left:16px;border-left:3px solid #0866FF}
+  .p-metrics div:last-child dd{border-left-color:#CED0D4}
+  .pm-v{font-family:var(--head);font-weight:800;font-size:clamp(1.4rem,2vw,1.75rem);line-height:1.15;letter-spacing:-.02em;color:#1C1E21}
+  .pm-role{font-family:var(--head);font-weight:700;font-size:1rem;line-height:1.75;color:#1C1E21}
+  .pm-l{font-size:.98rem;line-height:1.45;color:#47484B}
+  @media (max-width:1024px){
+    .proj,.proj.flip{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:40px}
+  }
+  @media (max-width:760px){
+    .proj,.proj.flip{grid-template-columns:1fr;grid-template-areas:"text" "media" "metrics";row-gap:24px}
+    .p-text{max-width:none}
+    .p-metrics{grid-template-columns:1fr 1fr;gap:20px}
+    .p-metrics div:last-child{grid-column:1 / -1}
+  }
+  @media (max-width:340px){.p-metrics{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){.p-media img,.pl-main .arr{transition:none}.proj:hover .p-media img,.pl-main:hover .arr{transform:none}}
+
+  /* ===== Selected work: stacked showcase ===== */
+  .proj2{padding:clamp(48px,7vw,96px) 0;border-top:1px solid #CED0D4}
+  .proj2:first-child{border-top:0;padding-top:clamp(24px,3vw,40px)}
+  .p2-head{max-width:68ch}
+  .p2-head h4{margin:0;font-family:var(--head);font-weight:800;font-size:clamp(1.9rem,3.4vw,2.75rem);line-height:1.1;letter-spacing:-.03em}
+  .p2-head h4 a{color:#1C1E21!important;text-decoration:none!important}
+  .p2-head h4 a:hover{text-decoration:underline!important;text-decoration-color:#0866FF!important;text-decoration-thickness:3px!important;text-underline-offset:8px}
+  .p2-head h4 a:focus-visible{outline:3px solid #0866FF;outline-offset:4px;border-radius:2px}
+  .p2-desc{margin:14px 0 0;font-size:clamp(1.05rem,1.4vw,1.2rem);line-height:1.6;color:#47484B}
+  .p2-fig{margin:clamp(24px,3vw,36px) 0 0}
+  .p2-media{aspect-ratio:16/9;background:#F0F2F5;border-radius:12px;padding:clamp(20px,4vw,48px) clamp(20px,4vw,48px) 0;overflow:hidden}
+  .p2-media img{display:block;width:100%;height:auto;border:1px solid #CED0D4;border-bottom:0;border-radius:6px 6px 0 0;background:#fff;transition:transform .3s ease}
+  .p2-media.multi{display:flex;gap:clamp(12px,2vw,24px);align-items:flex-start;justify-content:center}
+  .p2-media.multi img{width:auto;flex:1 1 0;min-width:0;border-bottom:1px solid #CED0D4;border-radius:6px}
+  .p2-media.multi img:nth-child(1){flex-grow:1.2}
+  .proj2:hover .p2-media img{transform:translateY(-6px)}
+  .p2-fig figcaption{margin-top:12px;font-size:.95rem;color:#47484B}
+  .p2-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:clamp(24px,3vw,36px) 0 0;padding:0}
+  .p2-metrics div{margin:0}
+  .p2-metrics dd{margin:0;display:flex;flex-direction:column;gap:6px;padding-left:16px;border-left:3px solid #0866FF}
+  .p2-metrics div:last-child dd{border-left-color:#CED0D4}
+  .p2-metrics .pm-v{font-size:clamp(1.6rem,2.6vw,2.1rem)}
+  .p2-links{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 32px;margin-top:clamp(24px,3vw,32px);padding-top:16px;border-top:1px solid #CED0D4}
+  .p2-links .pl{font-size:1.05rem}
+  @media (max-width:760px){
+    .p2-media{aspect-ratio:auto}
+    .p2-media.multi{aspect-ratio:4/3}
+    .p2-metrics{grid-template-columns:1fr 1fr;gap:20px}
+    .p2-metrics div:last-child{grid-column:1 / -1}
+    .p2-links{flex-direction:column;align-items:flex-start;gap:0}
+  }
+  @media (max-width:340px){.p2-metrics{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){.p2-media img{transition:none}.proj2:hover .p2-media img{transform:none}}
 </style>
 </head>
 <body>
@@ -386,48 +468,52 @@
     </div>
   </header>
 
-  <section class="work" id="work" aria-labelledby="work-h" data-layout="split"><div class="wrap">
+  <section class="work" id="work" aria-labelledby="work-h"><div class="wrap">
     <h3 id="work-h">Selected work</h3>
-    <div class="cases">
-      <article class="cs">
-        <div class="cs-img"><svg class="shot" viewBox="0 0 560 300" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Placeholder screenshot: AI search answer with inline source links">
-          <rect width="560" height="300" fill="#FFFFFF"/>
-          <rect x="40" y="34" width="480" height="44" rx="22" fill="#F2F3F5" stroke="#D3D7DD"/>
-          <circle cx="68" cy="56" r="8" fill="none" stroke="#8A919C" stroke-width="3"/>
-          <rect x="88" y="51" width="200" height="10" rx="5" fill="#A3A9B3"/>
-          <rect x="40" y="104" width="120" height="12" rx="6" fill="#2B2F36"/>
-          <rect x="40" y="132" width="440" height="9" rx="4.5" fill="#D3D7DD"/>
-          <rect x="40" y="152" width="300" height="9" rx="4.5" fill="#D3D7DD"/>
-          <rect x="346" y="148" width="64" height="18" rx="9" fill="#47484B"/>
-          <rect x="40" y="176" width="400" height="9" rx="4.5" fill="#D3D7DD"/>
-          <rect x="40" y="196" width="180" height="9" rx="4.5" fill="#D3D7DD"/>
-          <rect x="226" y="192" width="64" height="18" rx="9" fill="#47484B"/>
-          <rect x="40" y="236" width="150" height="34" rx="8" fill="#F2F3F5" stroke="#D3D7DD"/>
-          <rect x="202" y="236" width="150" height="34" rx="8" fill="#F2F3F5" stroke="#D3D7DD"/>
-        </svg></div>
-        <div class="cs-text">
-          <h4><a href="#work">AI-Powered Search</a></h4>
-          <p class="sum">Making city information easier to find through AI-powered search on Boston.gov, while keeping answers connected to official sources.</p>
-          <ul class="metrics"><li><span class="mv">+23.9 pts</span><span class="ml">more positive feedback</span></li><li><span class="mv">Site-wide</span><span class="ml">from a one-office pilot</span></li></ul>
-          <div class="cs-actions"><p class="more tlink" aria-hidden="true">Read the case study</p><a class="live2" href="https://www.boston.gov/" aria-label="AI-Powered Search live on Boston.gov (opens Boston.gov)">View live site<svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+    <div class="projs">
+      <article class="proj2" aria-labelledby="p-ai">
+        <header class="p2-head">
+          <h4 id="p-ai"><a href="ai-search.html">AI-Powered Search</a></h4>
+          <p class="p2-desc">Making city information easier to find through AI-powered search on Boston.gov, while keeping answers connected to official sources.</p>
+        </header>
+        <figure class="p2-fig">
+          <div class="p2-media" role="img" aria-label="AI answer on Boston.gov to “How do I pay a parking ticket?”, summarizing the four ways to pay with details for each"><img src="images/ai/live-answer.jpg" width="1600" height="1056" alt="" loading="lazy"></div>
+          <figcaption>AI answer on Boston.gov</figcaption>
+        </figure>
+        <dl class="p2-metrics"><div><dt class="vh">Result</dt><dd><span class="pm-v">+23.9 pts</span><span class="pm-l">increase in positive feedback</span></dd></div><div><dt class="vh">Result</dt><dd><span class="pm-v">Site-wide</span><span class="pm-l">expanded from a one-office pilot</span></dd></div><div><dt class="vh">Role</dt><dd><span class="pm-role">My role</span><span class="pm-l">Lead UX/UI Designer</span></dd></div></dl>
+        <div class="p2-links">
+          <a class="pl pl-main" href="ai-search.html">Read the case study<svg class="arr" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh">: AI-Powered Search</span></a>
+          <a class="pl pl-live" href="https://www.boston.gov/boston-search?tab=results&amp;source=bos_ai_search&amp;language=en&amp;anonymous=true&amp;referrer=/departments/public-works/recycling-boston&amp;q=How%20can%20I%20work%20for%20the%20city%3F">View live site<svg class="ext" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> for AI-Powered Search (opens Boston.gov)</span></a>
         </div>
       </article>
-      <article class="cs">
-        <div class="cs-img"><img class="shot" src="images/chosen-name/email.jpg" width="1440" height="960" alt="Chosen Name email choice screen: keep the current email or use a new one that matches the chosen name" style="width:auto;height:auto;max-width:100%;max-height:100%;border-radius:8px;border:1px solid var(--line);box-shadow:0 14px 32px -22px rgba(28,30,33,.4)"></div>
-        <div class="cs-text">
-          <h4><a href="chosen-name.html">Chosen Name</a></h4>
-          <p class="sum">Turning a manual, multi-team process into a self-service workflow for City of Boston employees.</p>
-          <ul class="metrics"><li><span class="mv">1,000+</span><span class="ml">employees served</span></li><li><span class="mv">~40 sec</span><span class="ml">to complete</span></li></ul>
-          <div class="cs-actions"><p class="more tlink" aria-hidden="true">Read the case study</p><span class="internal">Internal City tool, not publicly available</span></div>
+      <article class="proj2" aria-labelledby="p-cn">
+        <header class="p2-head">
+          <h4 id="p-cn"><a href="chosen-name.html">Chosen Name</a></h4>
+          <p class="p2-desc">Turning a manual, multi-team process into a self-service workflow for City of Boston employees.</p>
+        </header>
+        <figure class="p2-fig">
+          <div class="p2-media" role="img" aria-label="Chosen Name email step in Access Boston: keep the current email or use a new one that matches the chosen name"><img src="images/chosen-name/email.jpg" width="1440" height="960" alt="" loading="lazy"></div>
+          <figcaption>Email step in Access Boston</figcaption>
+        </figure>
+        <dl class="p2-metrics"><div><dt class="vh">Result</dt><dd><span class="pm-v">1,000+</span><span class="pm-l">employees have used the workflow</span></dd></div><div><dt class="vh">Result</dt><dd><span class="pm-v">Weeks → 40 sec</span><span class="pm-l">time to update a chosen name</span></dd></div><div><dt class="vh">Role</dt><dd><span class="pm-role">My role</span><span class="pm-l">Lead UX/UI Designer, 2024</span></dd></div></dl>
+        <div class="p2-links">
+          <a class="pl pl-main" href="chosen-name.html">Read the case study<svg class="arr" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh">: Chosen Name</span></a>
+          <p class="pl-note">Internal City tool, not publicly available</p>
         </div>
       </article>
-      <article class="cs">
-        <div class="cs-img"><img class="shot" src="images/sanitation/date.jpg" width="520" height="910" alt="Sanitation Scheduling date step: a calendar where only available pickup dates are highlighted"></div>
-        <div class="cs-text">
-          <h4><a href="sanitation.html">Sanitation Scheduling</a></h4>
-          <p class="sum">Giving residents control of mattress and bulky-item pickups: book, reschedule, or cancel online.</p>
-          <ul class="metrics"><li><span class="mv">10</span><span class="ml">languages</span></li><li><span class="mv">3 services</span><span class="ml">built on one pattern</span></li></ul>
-          <div class="cs-actions"><p class="more tlink" aria-hidden="true">Read the case study</p><a class="live2" href="https://www.boston.gov/departments/public-works/mattress-recycling#/mattress" aria-label="Sanitation Scheduling live on Boston.gov (opens Boston.gov)">View live project<svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+      <article class="proj2" aria-labelledby="p-ss">
+        <header class="p2-head">
+          <h4 id="p-ss"><a href="sanitation.html">Sanitation Scheduling</a></h4>
+          <p class="p2-desc">Giving residents control of mattress and bulky-item pickups: book, reschedule, or cancel online.</p>
+        </header>
+        <figure class="p2-fig">
+          <div class="p2-media multi" role="img" aria-label="Three Sanitation Scheduling steps: choosing items with a ten-item limit, a calendar showing only available dates, and a review screen with edit links"><img src="images/sanitation/items.jpg" width="695" height="1105" alt="" loading="lazy"><img src="images/sanitation/date.jpg" width="520" height="910" alt="" loading="lazy"><img src="images/sanitation/review.jpg" width="520" height="540" alt="" loading="lazy"></div>
+          <figcaption>Items, date, and review steps on Boston.gov</figcaption>
+        </figure>
+        <dl class="p2-metrics"><div><dt class="vh">Result</dt><dd><span class="pm-v">111,859</span><span class="pm-l">bookings since launch across all 3 services</span></dd></div><div><dt class="vh">Result</dt><dd><span class="pm-v">46,180</span><span class="pm-l">bookings in 2026 so far</span></dd></div><div><dt class="vh">Role</dt><dd><span class="pm-role">My role</span><span class="pm-l">Lead UX/UI Designer, 2023</span></dd></div></dl>
+        <div class="p2-links">
+          <a class="pl pl-main" href="sanitation.html">Read the case study<svg class="arr" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh">: Sanitation Scheduling</span></a>
+          <a class="pl pl-live" href="https://www.boston.gov/departments/public-works/mattress-recycling#/mattress">View live project<svg class="ext" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="vh"> for Sanitation Scheduling (opens Boston.gov)</span></a>
         </div>
       </article>
     </div>
@@ -465,7 +551,7 @@
         </div>
       </li>
       <li class="pcard">
-        <div class="pimg photo"><img style="object-position:left top" src="images/tax-calculator.jpg" alt="Tax calculator with residential and commercial tabs, an address search or estimated value input, and the estimated value shown beside a Calculate button" loading="lazy" width="1200" height="750"></div>
+        <div class="pimg photo"><img src="images/tax-calculator.jpg" alt="Tax calculator with residential and commercial tabs, an address search or estimated value input, and the estimated value shown beside a Calculate button" loading="lazy" width="1200" height="750"></div>
         <div class="pbody">
           <h4>Property Tax Relief Calculator</h4>
           <p class="desc">Helping homeowners see how proposed property tax relief would affect their bill, from just an address.</p>
@@ -474,7 +560,7 @@
         </div>
       </li>
       <li class="pcard">
-        <div class="pimg photo"><img src="images/death-certificate.jpg" alt="Step 4 of 7 in the death certificate request: order details with options to edit or remove a certificate (personal details blurred)" loading="lazy" width="1200" height="750"></div>
+        <div class="pimg photo"><img src="images/death-certificate.jpg" alt="Step 3 of 7 in the death certificate request: certificate options, asking whether to print the Social Security number, with additional verification fields when Yes is selected" loading="lazy" width="1200" height="750"></div>
         <div class="pbody">
           <h4>Death Certificate Ordering</h4>
           <p class="desc">Making a difficult task more straightforward: search Boston death records and order certified copies online.</p>
@@ -483,7 +569,7 @@
         </div>
       </li>
       <li class="pcard">
-        <div class="pimg photo"><img src="images/sanitation/cart-card.jpg" alt="Recycle carts request, step 1: choose a new cart, a broken cart swap, or a cart pickup" loading="lazy" width="1200" height="750"></div>
+        <div class="pimg photo"><img src="images/sanitation/cart-card.jpg" alt="Recycle carts request, step 3: the resident's trash day and three upcoming Wednesdays to choose from" loading="lazy" width="1200" height="750"></div>
         <div class="pbody">
           <h4>Recycling Cart Requests</h4>
           <p class="desc">Request a new, replacement, or pickup of a recycling cart online, built by reusing the components and logic of the mattress scheduling flow.</p>

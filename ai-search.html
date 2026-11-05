@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-Powered Search case study | Juliana Donovan Agudelo</title>
+<meta name="description" content="How I designed AI-powered search for Boston.gov, from a one-office pilot to a site-wide launch.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Atkinson+Hyperlegible+Next:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C1E21; --ink-2:#47484B; --bg:#F0F2F5; --surface:#FFFFFF; --warm:#F3F1ED;
+    --panel:#E4E6EB; --accent:#0866FF; --link:#0866FF; --link-hover:#0047BA; --line:#CED0D4; --tint:#E7F0FF;
+    --head:"Manrope",system-ui,sans-serif; --body:"Atkinson Hyperlegible Next",system-ui,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+  body{margin:0;font-family:var(--body);color:var(--ink);background:var(--surface);line-height:1.65;font-size:1.0625rem}
+  img{max-width:100%;height:auto;display:block}
+  h1,h2,h3{font-family:var(--head);letter-spacing:-.02em;line-height:1.2;margin:0}
+  p{margin:0}
+  a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--link);text-decoration-thickness:2px;text-underline-offset:5px;transition:color .15s,text-decoration-thickness .15s}
+  a:hover{color:var(--link-hover);text-decoration-thickness:3px}
+  :focus-visible{outline:3px solid var(--link);outline-offset:4px;border-radius:2px}
+  .skip{position:absolute;left:16px;top:-60px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;z-index:10;text-decoration:none}
+  .skip:focus{top:16px;color:#fff}
+  .container{max-width:1120px;margin:0 auto;padding:0 32px}
+  @media (max-width:600px){.container{padding:0 20px}}
+
+  /* nav */
+  nav.top{display:flex;justify-content:space-between;align-items:center;padding:24px 0;gap:16px}
+  nav.top .name{font-family:var(--head);font-weight:800;text-decoration:none}
+  nav.top ul{list-style:none;display:flex;gap:24px;margin:0;padding:0}
+  @media (max-width:520px){nav.top{flex-direction:column;align-items:flex-start;gap:12px}}
+
+  /* hero */
+  .hero{padding:32px 0 0}
+  .back{display:inline-block;font-family:var(--head);font-weight:700;margin-bottom:40px}
+  .hero h1{font-size:clamp(2.3rem,5vw,3.75rem);font-weight:800;letter-spacing:-.035em;max-width:18ch}
+  .lede{margin-top:20px;font-size:clamp(1.15rem,1.6vw,1.3rem);color:var(--ink-2);max-width:54ch}
+  .panel{background:var(--panel);border-radius:20px;padding:clamp(16px,3.2vw,40px)}
+  .screen{border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 14px 32px -22px rgba(28,30,33,.4)}
+  .hero .panel{margin-top:48px}
+  .flow3{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,24px)}
+  .flow3 p{margin-top:14px;font-family:var(--head);font-weight:700;font-size:.98rem}
+  .flow3 span{color:var(--ink-2);font-weight:600}
+  @media (max-width:760px){.flow3{grid-template-columns:1fr}}
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin:48px 0 0;padding:0}
+  .facts dt{font-family:var(--head);font-weight:700;font-size:.92rem;color:var(--ink-2)}
+  .facts dd{margin:4px 0 0}
+  .impact{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin:40px 0 0;padding:32px 0 0;border-top:1px solid var(--line)}
+  .impact strong{display:block;font-family:var(--head);font-weight:800;font-size:clamp(1.8rem,3vw,2.3rem);letter-spacing:-.03em;line-height:1.15}
+  .impact span{color:var(--ink-2)}
+  @media (max-width:860px){.facts{grid-template-columns:1fr 1fr}.impact{grid-template-columns:1fr}}
+
+  /* body layout with table of contents */
+  .layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:64px;margin-top:clamp(72px,9vw,112px)}
+  .toc{position:sticky;top:24px;align-self:start}
+  .toc p{font-family:var(--head);font-weight:700;font-size:.92rem;color:var(--ink-2);margin-bottom:12px}
+  .toc ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--line)}
+  .toc a{display:block;padding:7px 0 7px 16px;margin-left:-2px;border-left:2px solid transparent;text-decoration:none;color:var(--ink-2);font-size:.98rem}
+  .toc a:hover{color:var(--ink);text-decoration:underline;text-decoration-color:var(--link)}
+  .toc a[aria-current="true"]{color:var(--ink);font-weight:700;border-left-color:var(--link)}
+  @media (max-width:1060px){.layout{grid-template-columns:1fr;gap:0}.toc{display:none}}
+
+  article section{padding:clamp(56px,7vw,88px) 0;border-top:1px solid var(--line)}
+  article section:first-child{border-top:0;padding-top:0}
+  .label{font-family:var(--head);font-weight:700;color:var(--ink-2);font-size:1rem;margin-bottom:10px}
+  h2{font-size:clamp(1.75rem,3.2vw,2.4rem);font-weight:800;max-width:24ch}
+  h3{font-size:1.2rem;font-weight:800}
+  .text{max-width:66ch;color:var(--ink-2);margin-top:20px}
+  .text p+p{margin-top:16px}
+  .text strong{color:var(--ink)}
+  figure{margin:40px 0 0}
+  figcaption{margin-top:14px;color:var(--ink-2);font-size:.95rem;max-width:70ch}
+
+  .quote{margin:0;padding-left:24px;border-left:4px solid var(--accent)}
+  .quote p:first-child{font-family:var(--head);font-weight:800;font-size:clamp(1.4rem,2.6vw,1.9rem);line-height:1.25;letter-spacing:-.02em;color:var(--ink);max-width:28ch}
+  .quote p+p{margin-top:14px;color:var(--ink-2);max-width:60ch}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:32px 48px;margin-top:40px}
+  .two ul{margin:12px 0 0;padding-left:1.2em;color:var(--ink-2)}
+  .two li+li{margin-top:8px}
+  .two p{margin-top:8px;color:var(--ink-2)}
+  @media (max-width:700px){.two{grid-template-columns:1fr}}
+
+  .hmw{margin-top:48px;background:var(--ink);color:#fff;border-radius:16px;padding:clamp(24px,4vw,40px)}
+  .hmw p:first-child{font-family:var(--head);font-weight:700;color:#C9CCD1;font-size:.98rem}
+  .hmw p+p{margin-top:10px;font-family:var(--head);font-weight:800;font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.35;letter-spacing:-.015em}
+
+  .cards{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .cards li{border:1px solid var(--line);border-radius:14px;padding:20px}
+  .cards p{margin-top:6px;color:var(--ink-2);font-size:1rem}
+  @media (max-width:900px){.cards{grid-template-columns:1fr 1fr}}
+  @media (max-width:480px){.cards{grid-template-columns:1fr}}
+
+  .tags{list-style:none;margin:24px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+  .tags li{background:var(--tint);border-radius:999px;padding:6px 14px;font-family:var(--head);font-weight:700;font-size:.95rem}
+
+  .path .tag{display:inline-block;font-family:var(--head);font-weight:700;font-size:.85rem;background:var(--tint);padding:4px 12px;border-radius:999px;margin-bottom:12px}
+  .path{border:1px solid var(--line);border-radius:16px;padding:24px}
+
+  .scroller{overflow-x:auto;border-radius:10px;background:#fff;border:1px solid var(--line)}
+  .scroller img{max-width:none;width:2100px}
+  .hint{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:14px;color:var(--ink-2);font-size:.95rem}
+
+  .step{margin-top:clamp(40px,5vw,56px)}
+  .step+.step{margin-top:clamp(56px,7vw,80px)}
+  .step .num{font-family:var(--head);font-weight:800;color:var(--ink-2)}
+  .step h3{font-size:1.5rem;margin-top:4px}
+  .step .text{margin-top:10px}
+  .step figure{margin-top:24px}
+
+  .results{list-style:none;margin:32px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .results li{border-top:3px solid var(--ink);padding-top:14px}
+  .results strong{display:block;font-family:var(--head);font-weight:800;font-size:clamp(1.5rem,2.4vw,1.9rem);letter-spacing:-.03em;line-height:1.2}
+  .results p{margin-top:6px;color:var(--ink-2);font-size:1rem}
+  @media (max-width:900px){.results{grid-template-columns:1fr 1fr}}
+  @media (max-width:480px){.results{grid-template-columns:1fr}}
+
+  .lessons{display:grid;gap:32px;margin-top:32px;max-width:66ch}
+  .lessons p{margin-top:8px;color:var(--ink-2)}
+  .closing{margin-top:40px;font-family:var(--head);font-weight:800;font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.35;max-width:36ch}
+
+  .next{background:var(--ink);color:#fff;padding:clamp(56px,7vw,88px) 0;margin-top:clamp(40px,6vw,72px)}
+  .next p{color:#C9CCD1;font-family:var(--head);font-weight:700}
+  .next a{color:#fff;font-family:var(--head);font-weight:800;font-size:clamp(1.8rem,4vw,2.75rem);letter-spacing:-.03em;text-decoration-color:var(--accent);display:inline-block;margin-top:6px}
+  .next a:hover{color:#fff;text-decoration-thickness:4px}
+  .next :focus-visible{outline-color:var(--accent)}
+  footer{background:var(--ink);border-top:1px solid #3A3B3F;padding:28px 0;color:#C9CCD1;font-size:.95rem}
+  footer a{color:#fff;text-decoration-color:#8AB4FF}
+  footer a:hover{color:#fff}
+  footer :focus-visible{outline-color:#8AB4FF}
+  footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  .cards.cards3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:760px){.cards.cards3{grid-template-columns:1fr}}
+  .two p strong{color:var(--ink)}
+  .phones{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,240px));gap:clamp(16px,3vw,40px);justify-content:center;align-items:start}
+  .phones img{border-radius:14px}
+  .phones p{margin-top:12px;font-family:var(--head);font-weight:700;font-size:.95rem;text-align:center}
+  @media (max-width:600px){.phones{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.phones p{font-size:.8rem}}
+  .mini{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;counter-reset:m}
+  .mini li{font-family:var(--head);font-weight:700;font-size:.88rem;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+  .mini li.hl{background:var(--ink);color:#fff;border-color:var(--ink)}
+  /* interactions */
+  nav.top a:hover{color:var(--link-hover)}
+  .toc a{transition:color .15s,border-color .15s,background-color .15s}
+  @media (hover:hover){.toc a:hover{background:var(--panel);border-left-color:#8A8D91}}
+  .toc a:active{background:#DADDE3}
+  .scroller:focus-visible{outline:3px solid var(--link);outline-offset:4px}
+  .back{transition:color .15s}
+
+  /* ---- Palette update: AAA ---- */
+  .btn-primary,a.btn-primary{background:#0047BA!important;border-color:#0047BA!important;color:#fff!important}
+  .btn-primary:hover,a.btn-primary:hover{background:#003A99!important;border-color:#003A99!important}
+  .btn-primary:active,a.btn-primary:active{background:#002E7A!important;border-color:#002E7A!important}
+  .metrics li:first-child .mv,.impact li:first-child strong,.impact div:first-child strong{box-shadow:inset 0 -.32em 0 color-mix(in srgb,#0866FF 35%,transparent)!important}
+  .toc a[aria-current="true"]{border-left-color:#0866FF!important}
+  .quote,.pull{border-left-color:#0866FF!important}
+  .tag.inprog,.tag:not(.plain){}
+
+  /* ---- Impact tiles ---- */
+  .metrics,.impact,.results{list-style:none;padding:0;display:grid!important;gap:12px!important}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:28px!important;max-width:460px}
+  .metrics li,.impact li,.results li{position:relative;background:#F0F2F5;border:0!important;border-radius:16px;padding:20px 20px 18px 24px!important;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+  .metrics li::before,.impact li::before,.results li::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#0866FF}
+  .metrics li:nth-child(2)::before,.impact li:nth-child(2)::before,.results li:nth-child(2)::before{background:#0866FF}
+  .impact li:nth-child(3)::before,.results li:nth-child(3)::before{background:#0866FF}
+  .results li:nth-child(4)::before{background:#1C1E21}
+  .metrics .mv,.impact strong,.results strong{font-family:var(--head);font-weight:800;font-size:clamp(1.75rem,2.6vw,2.25rem)!important;letter-spacing:-.03em;line-height:1.1;color:#1C1E21;box-shadow:none!important}
+  .metrics .ml,.impact span,.results p{color:#47484B;font-size:.98rem;margin:0!important;line-height:1.45}
+  .impact{grid-template-columns:repeat(3,minmax(0,1fr))!important;border-top:0!important;padding-top:0!important;margin-top:40px!important}
+  .results{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .impact strong,.results strong{display:block}
+  @media (max-width:900px){.results{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+  @media (max-width:640px){.impact,.results{grid-template-columns:1fr!important}}
+  .metrics li:first-child .mv,.impact li:first-child strong,.results li:first-child strong,.impact div:first-child strong{box-shadow:none!important}
+  .metrics .mv,.impact strong{white-space:nowrap}
+  @media (max-width:600px){.metrics .mv,.impact strong,.results strong{font-size:1.5rem!important}.metrics li{padding:16px 14px 14px 18px!important}}
+  .results{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  @media (max-width:640px){.results{grid-template-columns:1fr!important}}
+
+  /* ---- One accent only: blue ---- */
+  .metrics li::before,.impact li::before,.results li::before,
+  .metrics li:nth-child(n)::before,.impact li:nth-child(n)::before,.results li:nth-child(n)::before{background:#0866FF!important}
+  .toc a[aria-current="true"]{border-left-color:#0866FF!important}
+  .quote,.pull{border-left-color:#0866FF!important}
+  .other .tag,.tag{background:#E7F0FF!important;color:#0047BA!important}
+  .pair2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .pair3{display:grid;grid-template-columns:1.1fr 1.2fr 1fr;gap:16px;align-items:start}
+  .pair2 figure,.pair3 figure{margin-top:24px}
+  @media (max-width:760px){.pair2,.pair3{grid-template-columns:1fr}}
+  .hero .live2{position:static}
+  .ext{width:14px;height:14px;flex:none}
+  .live2{display:inline-flex;align-items:center;gap:6px;font-family:var(--head);font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:#0866FF;text-decoration-thickness:2px;text-underline-offset:5px}
+  .live2:hover{color:#0047BA;text-decoration-thickness:4px}
+  .carts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .carts p{margin-top:10px;font-family:var(--head);font-weight:700;font-size:.95rem}
+  @media (max-width:640px){.carts{grid-template-columns:1fr}}
+  .phones.phones4{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none}
+  @media (max-width:760px){.phones.phones4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .stack2 figure+figure{margin-top:20px}
+  .jm .panel{padding:clamp(20px,3vw,36px)}
+  .jm-curve{position:relative;height:120px;margin:0 0 8px;border-bottom:1px dashed #CED0D4}
+  .jm-curve svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .jm-curve polyline{fill:none;stroke:#0866FF;stroke-width:2.5;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+  .jm-dot{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#0866FF;border:2px solid #fff}
+  .jm-axis{position:absolute;left:0;font-family:var(--head);font-weight:700;font-size:.8rem;color:var(--ink-2)}
+  .jm-pos{top:-4px}.jm-neg{bottom:4px}
+  .jm-cols{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .jm-col{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+  .jm-phase{font-family:var(--head);font-weight:800;font-size:1rem}
+  .jm-do{color:var(--ink-2);font-size:.9rem;line-height:1.5}
+  .jm-quote{margin-top:auto!important;padding-top:8px;border-top:1px solid var(--line);font-style:italic;font-size:.9rem;line-height:1.5}
+  @media (max-width:900px){.jm-curve{display:none}.jm-cols{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.jm-cols{grid-template-columns:1fr}}
+  .flowwrap{background:#fff;padding:12px}
+  .flowsvg{display:block;width:100%;max-width:750px;margin:0 auto;min-width:560px;height:auto}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="container">
+  <nav class="top" aria-label="Main">
+    <a class="name" href="index.html">Juliana Donovan Agudelo</a>
+    <ul><li><a href="index.html#work">Work</a></li><li><a href="about.html">About</a></li><li><a href="index.html#contact">Contact</a></li></ul>
+  </nav>
+</div>
+
+<main id="main">
+  <header class="hero">
+    <div class="container">
+      <a class="back" href="index.html#work">Back to all work</a>
+      <h1>Making city information easier to find with AI-powered search</h1>
+      <p class="lede">Introducing natural-language search on Boston.gov, while keeping answers trustworthy, accessible, and connected to official sources.</p>
+      <p style="margin-top:20px"><a class="live2" href="https://www.boston.gov/boston-search?tab=results&amp;source=bos_ai_search&amp;language=en&amp;anonymous=true&amp;referrer=/departments/public-works/recycling-boston&amp;q=How%20can%20I%20work%20for%20the%20city%3F" aria-label="AI-Powered Search live on Boston.gov (opens Boston.gov)">View live site<svg class="ext" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
+
+      <div class="panel">
+        <ol class="flow3" aria-label="From pilot to site-wide search">
+          <li><img class="screen" src="images/ai/pilot-home.jpg" width="1040" height="760" alt="Pilot search page for the Office of Economic Opportunity and Inclusion: What are you looking for?, a disclosure that answers are AI-generated, three example questions, and a question box"><p>1. <span>The pilot</span></p></li>
+          <li><img class="screen" src="images/ai/live-home.jpg" width="1600" height="821" alt="Boston.gov homepage with the Boston.gov Search banner: a short disclosure, a question box, and example questions"><p>2. <span>Site-wide on Boston.gov</span></p></li>
+          <li><img class="screen" src="images/ai/v2-answer.jpg" width="782" height="1060" alt="2026 AI summary with inline source chips and a source popover"><p>3. <span>Answers with sources, 2026</span></p></li>
+        </ol>
+      </div>
+
+      <dl class="facts">
+        <div><dt>Role</dt><dd>Lead UX/UI Designer</dd></div>
+        <div><dt>Scope</dt><dd>Pilot on one City office's pages, then site-wide on Boston.gov</dd></div>
+        <div><dt>Team</dt><dd>UX, Engineering, Content</dd></div>
+        <div><dt>My contribution</dt><dd>Research, journey mapping, UX strategy, concept exploration, interaction design, UI, prototyping, accessibility, iteration</dd></div>
+      </dl>
+      <ul class="impact" aria-label="Impact">
+        <li><strong>+23.9 pts</strong><span>more positive feedback than keyword search</span></li>
+        <li><strong>Site-wide</strong><span>from a one-office pilot to all of Boston.gov</span></li>
+        <li><strong>Google Vertex AI</strong><span>answers grounded in official City content</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container layout">
+    <nav class="toc" aria-label="On this page">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#problem">The problem</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#pilot">The pilot</a></li>
+        <li><a href="#trust">Designing for trust</a></li>
+        <li><a href="#evaluation">Evaluating the pilot</a></li>
+        <li><a href="#sitewide">Going site-wide</a></li>
+        <li><a href="#improvements">2026 improvements</a></li>
+        <li><a href="#result">Results</a></li>
+        <li><a href="#learned">What I learned</a></li>
+      </ol>
+    </nav>
+
+    <article>
+      <section id="overview" aria-labelledby="overview-h">
+        <p class="label" id="overview-h">A small detail with a big impact</p>
+        <blockquote class="quote">
+          <p>An AI answer is only as trustworthy as the source behind it.</p>
+          <p>Instead of asking residents to read a summary and then hunt through search results, I connected every answer to official Boston.gov pages: numbered references in the summary, matched to source links beside it.</p>
+        </blockquote>
+        <figure><div class="panel"><img class="screen" src="images/ai/pilot-answer.jpg" width="1050" height="660" alt="Pilot answer layout: the question, an AI summary with numbered references, a Source links panel listing the matching Boston.gov pages, and a Was this helpful? feedback control"></div><figcaption>The pilot answer layout, shown with placeholder text: numbered references in the summary link to the official pages listed beside it.</figcaption></figure>
+        <div class="text">
+          <p>Boston.gov serves residents with different needs, backgrounds, and levels of familiarity with City services. The existing keyword search, powered by Swiftype, often returned broad or unfocused results, so residents needed to know the right terms or dig through several pages.</p>
+          <p>As part of the City's exploration of generative AI, I led the UX/UI design of AI-powered search on Boston.gov, from a focused pilot to a site-wide experience used by residents across the city.</p>
+        </div>
+      </section>
+
+      <section id="problem" aria-labelledby="problem-h">
+        <p class="label">The problem</p>
+        <h2 id="problem-h">Introducing AI required more than generating answers.</h2>
+        <div class="text"><p>On a public-sector website, residents use information to access essential services and make important decisions. Answers had to be useful, understandable, and grounded in reliable City information.</p></div>
+        <div class="two">
+          <div><h3>Finding relevant information</h3><p>Keyword search required residents to know specific terms to find the right resources.</p></div>
+          <div><h3>Maintaining trust</h3><p>AI responses had to reflect official Boston.gov content, not introduce unsupported or misleading information.</p></div>
+          <div><h3>Connecting answers to action</h3><p>A summary wasn't enough. Residents also needed an easy way to reach the official pages and services behind it.</p></div>
+          <div><h3>Being honest about AI</h3><p>Residents needed to know when they were reading an AI-generated answer, and that it could occasionally be wrong.</p></div>
+        </div>
+        <div class="hmw"><p>The design challenge</p><p>How might we help residents find City information by asking questions naturally, while keeping AI answers trustworthy, understandable, and connected to official resources?</p></div>
+      </section>
+
+      <section id="research" aria-labelledby="research-h">
+        <p class="label">Research</p>
+        <h2 id="research-h">Mapping a resident's journey before designing.</h2>
+        <div class="text"><p>Before designing any screens, I mapped how a resident might use AI search to solve a real task. The scenario: <strong>Dan, a business owner trying to get his business certified.</strong> The journey map follows his actions, thoughts, and feelings across five phases, and turns the low points into design opportunities.</p></div>
+        <figure class="jm" aria-labelledby="jm-cap">
+          <div class="panel">
+            <div class="jm-curve" aria-hidden="true">
+              <span class="jm-axis jm-pos">Confident</span><span class="jm-axis jm-neg">Overwhelmed</span>
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="10,58 30,82 50,38 70,44 90,16" /></svg>
+              <span class="jm-dot" style="left:10%;top:58%"></span><span class="jm-dot" style="left:30%;top:82%"></span><span class="jm-dot" style="left:50%;top:38%"></span><span class="jm-dot" style="left:70%;top:44%"></span><span class="jm-dot" style="left:90%;top:16%"></span>
+            </div>
+            <ol class="jm-cols"><li class="jm-col">
+            <p class="jm-phase">1. Learning</p>
+            <p class="jm-do">Dan is starting a business and knows he needs to register it. He decides to search online.</p>
+            <p class="jm-quote">“I’m wondering what certificates I need to start a business.”</p>
+          </li><li class="jm-col">
+            <p class="jm-phase">2. Searching</p>
+            <p class="jm-do">He visits Boston.gov, starts looking, and sees a lot of information. Then he finds AI search.</p>
+            <p class="jm-quote">“I’m overwhelmed by the amount of information.”</p>
+          </li><li class="jm-col">
+            <p class="jm-phase">3. Evaluating results</p>
+            <p class="jm-do">He reads the conversational answer, scrolls to the links, and compares them.</p>
+            <p class="jm-quote">“The paragraph tells me the steps I need in a simple, easy-to-follow way.”</p>
+          </li><li class="jm-col">
+            <p class="jm-phase">4. Decision making</p>
+            <p class="jm-do">He clicks the most relevant result and reads how to get certified.</p>
+            <p class="jm-quote">“This link is giving me all I need.”</p>
+          </li><li class="jm-col">
+            <p class="jm-phase">5. Taking action</p>
+            <p class="jm-do">He gathers the details and begins the certification process.</p>
+            <p class="jm-quote">“I have a step-by-step guide to help me get to my goal.”</p>
+          </li></ol>
+          </div>
+          <figcaption id="jm-cap">A simplified version of my journey map for the pilot. Dan's confidence drops when Boston.gov overwhelms him with information, then rises once AI search gives him clear steps and the right link.</figcaption>
+        </figure>
+        <h3 style="margin-top:48px">Opportunities that shaped the design</h3>
+        <ul class="tags"><li>Make AI search easy to find</li><li>Use simple language</li><li>Make results clear</li><li>Provide only relevant, accurate links</li><li>Give enough information to compare</li><li>Make links clearly clickable</li><li>Provide consistent, actionable information</li><li>Provide multilingual experiences</li><li>Be accessible to people with disabilities</li><li>Work well on mobile and desktop</li><li>Ask for and use feedback</li></ul>
+        <div class="text"><p>These opportunities became the backbone of the design: plain language, clear and relevant source links, accessibility, mobile support, and a built-in way to collect feedback.</p></div>
+      </section>
+
+      <section id="pilot" aria-labelledby="pilot-h">
+        <p class="label">The pilot</p>
+        <h2 id="pilot-h">Starting where the content was ready.</h2>
+        <div class="text">
+          <p>Rather than launching AI across the whole site, the team piloted it on the Office of Economic Opportunity and Inclusion (OEOI) section. Three years earlier, I had redesigned how residents and businesses find information in that section, organizing it around what people look for rather than the City's internal structure.</p>
+          <p>That work made OEOI the natural place to start: its pages were well structured and current, giving the AI a reliable foundation. <strong>AI quality depends on content quality.</strong></p>
+        </div>
+        <figure><div class="panel"><img class="screen" src="images/ai/pilot-home.jpg" width="1040" height="760" alt="Pilot search page with a disclosure about AI-generated answers, a contact email, three example business questions, and a question box with a note to validate answers on Boston.gov"></div><figcaption>The pilot start page: a plain-language disclosure, example questions to show what to ask, and a reminder to validate answers.</figcaption></figure>
+        
+        <h3 style="margin-top:48px">Mapping the pilot flow</h3>
+        <div class="text"><p>I mapped the full flow before designing screens: how residents reach AI search from the office's pages, ask a question, and what they can do with the results, including opening a source, giving feedback, or starting a new search.</p></div>
+        <figure><div class="panel"><div class="scroller flowwrap" tabindex="0" role="region" aria-label="Pilot user flow, scrolls sideways on small screens"><svg class="flowsvg" viewBox="0 0 750 760" role="img" aria-labelledby="uf-t uf-d" xmlns="http://www.w3.org/2000/svg" font-family="Manrope, system-ui, sans-serif">
+<title id="uf-t">AI search user flow for the pilot</title>
+<desc id="uf-d">From the Economic Opportunity and Inclusion page, the resident clicks Search, reaches the AI search screen, asks a question, and clicks Search to see the results screen. From the results they can: select a result, which opens the page in a new tab; give feedback, which opens feedback options where they select options and send, then return to the results; or start a new search, which returns them to the AI search screen. If they choose not to, they stay on the results.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#47484B"/></marker></defs>
+<rect x="20" y="22.0" width="180" height="56" rx="8" fill="#fff" stroke="#1C1E21" stroke-width="1.6"/><text x="110.0" y="42.2" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Economic Opportunity</text><text x="110.0" y="57.8" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">and Inclusion page</text><rect x="240" y="27.0" width="140" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="310.0" y="50.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Click “Search”</text><rect x="420" y="22.0" width="170" height="56" rx="8" fill="#fff" stroke="#1C1E21" stroke-width="1.6"/><text x="505.0" y="50.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">AI search screen</text><path d="M200,50 L238,50" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><path d="M380,50 L418,50" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><rect x="430" y="127.0" width="150" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="505.0" y="150.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Ask a question</text><rect x="240" y="127.0" width="150" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="315.0" y="150.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Click “Search”</text><rect x="20" y="122.0" width="180" height="56" rx="8" fill="#fff" stroke="#1C1E21" stroke-width="1.6"/><text x="110.0" y="150.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Results screen</text><path d="M505,78.0 L505,125.0" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><path d="M430,150 L392,150" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><path d="M240,150 L202,150" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><rect x="20" y="227.0" width="180" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="110.0" y="250.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">View results</text><path d="M110,178.0 L110,225.0" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><path d="M110,273 L110,640" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><rect x="170" y="327.0" width="150" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="245.0" y="350.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Select a result</text><path d="M110,350 L168,350" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><polygon points="410,312.0 474.0,350 410,388.0 346.0,350" fill="#fff" stroke="#0047BA" stroke-width="1.8"/><text x="410" y="342.8" font-size="12" font-weight="700" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">Open the</text><text x="410" y="357.2" font-size="12" font-weight="700" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">page?</text><path d="M320,350 L344.0,350" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><rect x="510" y="322.0" width="220" height="56" rx="8" fill="#fff" stroke="#1C1E21" stroke-width="1.6"/><text x="620.0" y="350.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Page opens in a new tab</text><path d="M474.0,350 L508,350" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><text x="492.0" y="338.0" font-size="12" font-weight="800" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">Yes</text><text x="410" y="402.0" font-size="11" font-weight="600" fill="#47484B" text-anchor="middle" dominant-baseline="middle">No: stay on results</text><rect x="170" y="437.0" width="150" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="245.0" y="460.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Give feedback</text><path d="M110,460 L168,460" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><polygon points="410,422.0 474.0,460 410,498.0 346.0,460" fill="#fff" stroke="#0047BA" stroke-width="1.8"/><text x="410" y="452.8" font-size="12" font-weight="700" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">Leave</text><text x="410" y="467.2" font-size="12" font-weight="700" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">feedback?</text><path d="M320,460 L344.0,460" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><rect x="510" y="432.0" width="180" height="56" rx="8" fill="#fff" stroke="#1C1E21" stroke-width="1.6"/><text x="600.0" y="460.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Feedback options</text><path d="M474.0,460 L508,460" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><text x="492.0" y="448.0" font-size="12" font-weight="800" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">Yes</text><text x="410" y="512.0" font-size="11" font-weight="600" fill="#47484B" text-anchor="middle" dominant-baseline="middle">No: stay on results</text><rect x="510" y="527.0" width="180" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="600.0" y="550.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Select options</text><path d="M600,488.0 L600,525.0" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><rect x="330" y="527.0" width="110" height="46" rx="23.0" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="385.0" y="550.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Send</text><path d="M510,550 L442,550" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><text x="385" y="588.0" font-size="11" font-weight="600" fill="#47484B" text-anchor="middle" dominant-baseline="middle">Then back to results</text><polygon points="240,602.0 304.0,640 240,678.0 176.0,640" fill="#fff" stroke="#0047BA" stroke-width="1.8"/><text x="240" y="632.8" font-size="12" font-weight="700" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">New</text><text x="240" y="647.2" font-size="12" font-weight="700" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">search?</text><path d="M110,640 L174.0,640" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><rect x="380" y="612.0" width="220" height="56" rx="8" fill="#fff" stroke="#1C1E21" stroke-width="1.6"/><text x="490.0" y="640.0" font-size="13" font-weight="700" fill="#1C1E21" text-anchor="middle" dominant-baseline="middle">Back to AI search screen</text><path d="M304.0,640 L378,640" fill="none" stroke="#47484B" stroke-width="1.6" marker-end="url(#ah)"/><text x="342.0" y="628.0" font-size="12" font-weight="800" fill="#0047BA" text-anchor="middle" dominant-baseline="middle">Yes</text><text x="240" y="692.0" font-size="11" font-weight="600" fill="#47484B" text-anchor="middle" dominant-baseline="middle">No: stay on results</text><text x="20" y="735.0" font-size="12" font-weight="800" fill="#1C1E21" text-anchor="start" dominant-baseline="middle">Legend</text><rect x="90" y="721" width="40" height="28" rx="6" fill="#fff" stroke="#1C1E21" stroke-width="1.6"/><text x="138" y="735.0" font-size="12" font-weight="600" fill="#1C1E21" text-anchor="start" dominant-baseline="middle">Screen</text><rect x="210" y="723" width="40" height="24" rx="12" fill="#E7F0FF" stroke="#0866FF" stroke-width="1.6"/><text x="258" y="735.0" font-size="12" font-weight="600" fill="#1C1E21" text-anchor="start" dominant-baseline="middle">Action</text><polygon points="350,720 370,735 350,750 330,735" fill="#fff" stroke="#0047BA" stroke-width="1.8"/><text x="378" y="735.0" font-size="12" font-weight="600" fill="#1C1E21" text-anchor="start" dominant-baseline="middle">Decision</text>
+</svg></div></div>
+          <figcaption>The pilot user flow, redrawn for readability from my original Miro map.</figcaption></figure>
+        <h3 style="margin-top:48px">Designed for mobile from the start</h3>
+        <div class="text"><p>On phones, the source links collapse into a "View source links" control under the summary, so the answer stays readable without losing the path to official pages.</p></div>
+        <figure><div class="panel"><ul class="phones" aria-label="Pilot mobile screens">
+          <li><img class="screen" src="images/ai/pilot-mobile-home.jpg" width="390" height="844" alt="Pilot mobile start page with the AI disclosure, example questions, and a question box"><p>Start</p></li>
+          <li><img class="screen" src="images/ai/pilot-mobile-answer.jpg" width="316" height="720" alt="Pilot mobile answer with a summary, numbered references, a View source links control, and feedback buttons (placeholder text)"><p>Answer with sources</p></li>
+        </ul></div></figure>
+      </section>
+
+      <section id="trust" aria-labelledby="trust-h">
+        <p class="label">Designing for trust</p>
+        <h2 id="trust-h">Clear about what's AI, and where it comes from.</h2>
+        <div class="text"><p>I explored multiple concepts before committing to a direction, then worked closely with engineering and the Content Director to balance the experience with technical and content requirements.</p></div>
+        <div class="two">
+          <div><h3>Disclose, plainly</h3><p>Every entry point explains that answers are AI-generated, that some may be incorrect, and how to reach the team.</p></div>
+          <div><h3>Show the sources</h3><p>Numbered references tie each part of the answer to the official page it came from.</p></div>
+          <div><h3>Invite feedback</h3><p>A "Was this helpful?" control under every answer feeds directly into improving the experience.</p></div>
+          <div><h3>Honest when it doesn't know</h3><p>Dedicated states tell residents plainly when there's no information available, or when something went wrong, instead of showing a weak or speculative answer.</p></div>
+        </div>
+        <div class="text"><p><strong>Accessibility was built in from the start:</strong> layout and hierarchy that keep the answer, sources, and actions easy to scan, and full keyboard access to search, read responses, and reach source links.</p></div>
+      </section>
+
+      <section id="evaluation" aria-labelledby="eval-h">
+        <p class="label">Evaluating the pilot</p>
+        <h2 id="eval-h">Did AI search change how residents felt about search?</h2>
+        <div class="text"><p>After the pilot, we compared feedback sentiment between traditional search and AI Search, using Boston.gov's existing feedback mechanism.</p></div>
+        <ul class="results">
+          <li><strong>11% → 34.9%</strong><p>positive feedback, traditional search vs. AI Search.</p></li>
+          <li><strong>85% → 65.1%</strong><p>negative feedback, traditional search vs. AI Search.</p></li>
+        </ul>
+        <div class="text"><p>The results showed a meaningful shift, but negative sentiment remained an opportunity. The feedback also reinforced a key point: <strong>generating an answer doesn't mean a resident has found what they need.</strong> We kept improving.</p>
+          <p style="font-size:.95rem">These figures measure feedback sentiment, not search success or task completion.</p></div>
+      </section>
+
+      <section id="sitewide" aria-labelledby="site-h">
+        <p class="label">Going site-wide</p>
+        <h2 id="site-h">From one office to all of Boston.gov.</h2>
+        <div class="text"><p>After the pilot and further iterations, AI Search expanded across Boston.gov, replacing Swiftype. A much larger and more varied range of content meant a new question: how should AI search appear on every page without getting in the way?</p></div>
+        <h3 style="margin-top:40px">Exploring the entry point</h3>
+        <div class="text"><p>I explored several treatments for a search banner that sits above each page's content: light, dark, and white backgrounds, collapsed and expanded states, and example questions as chips.</p></div>
+        <figure><div class="panel"><div class="scroller" tabindex="0" role="region" aria-label="Banner explorations, scrolls sideways"><img src="images/ai/explorations.jpg" width="1230" height="700" style="width:1230px" alt="Design explorations for the Introducing AI Search banner: grey, dark navy, and white versions, each in a collapsed and an expanded state with a description and example questions, plus previews placed above a Boston permits and licenses page"></div></div>
+          <figcaption>Banner explorations in collapsed and expanded states, previewed on a real Boston.gov page.</figcaption></figure>
+        <h3 style="margin-top:48px">The chosen direction</h3>
+        <div class="text"><p>A dark banner stands out from page content without competing with it. It keeps the disclosure, the question box, and example questions together, and stacks cleanly on phones.</p></div>
+        <div class="pair2" style="grid-template-columns:2.6fr 1fr;align-items:start">
+          <figure><div class="panel"><img class="screen" src="images/ai/banner.jpg" width="1440" height="264" alt="Final Introducing AI Search banner: a disclosure on the left and a question box with example questions on the right, on a dark navy background"></div></figure>
+          <figure><div class="panel"><img class="screen" src="images/ai/banner-mobile.jpg" width="380" height="546" alt="Mobile version of the banner with the disclosure, question box, and example questions stacked"></div></figure>
+        </div>
+        <h3 style="margin-top:48px">Live on Boston.gov</h3>
+        <div class="pair2">
+          <figure><div class="panel"><img class="screen" src="images/ai/live-home.jpg" width="1600" height="821" alt="Boston.gov homepage with the live Boston.gov Search banner above the Welcome to the City of Boston header"></div><figcaption>The search banner on the Boston.gov homepage.</figcaption></figure>
+          <figure><div class="panel"><img class="screen" src="images/ai/live-answer.jpg" width="1600" height="1056" alt="Live AI answer to How do I pay a parking ticket?, listing online, mail, phone, and in-person options with details, plus feedback buttons"></div><figcaption>A live answer: a direct summary, organized options, and a feedback control.</figcaption></figure>
+        </div>
+        <h3 style="margin-top:48px">The team's continued work</h3>
+        <div class="text"><p>While I was on leave, another designer added a control that lets residents switch between AI Search and traditional search. It reinforced a principle that runs through this project: introducing new technology shouldn't remove familiar ways of accomplishing a task.</p></div>
+      </section>
+
+      <section id="improvements" aria-labelledby="imp-h">
+        <p class="label">2026 improvements</p>
+        <h2 id="imp-h">Clearer choices, closer sources, better feedback.</h2>
+        <div class="text"><p>This year I designed a new round of improvements based on what residents told us through feedback. Three priorities shaped it: give residents a clear choice, bring sources into the answer itself, and learn exactly why an answer did or didn't work.</p></div>
+
+        <h3 style="margin-top:40px">1. A clear choice between results and answers</h3>
+        <div class="text"><p>Some residents want a list of pages; others want a direct answer. The search banner now offers both, with a short explanation of each. The button changes from <strong>Search</strong> to <strong>Ask</strong>, and the suggestions change from popular searches to popular questions, so the interface always matches what the resident chose.</p></div>
+        <div class="stack2">
+          <figure><div class="panel"><img class="screen" src="images/ai/v2-banner-results.jpg" width="1280" height="348" alt="Boston.gov Search banner with Search results selected: a What are you looking for? box, a Search button, and popular searches"></div><figcaption>Search results selected</figcaption></figure>
+          <figure><div class="panel"><img class="screen" src="images/ai/v2-banner-ai.jpg" width="1280" height="348" alt="Boston.gov Search banner with AI summary selected: a How can I help you? box, an Ask button, and popular questions"></div><figcaption>AI summary selected</figcaption></figure>
+        </div>
+        <div class="text"><p>On the results page, tabs let residents switch between the two at any time without retyping their question.</p></div>
+        <figure><div class="panel"><img class="screen" src="images/ai/v2-tabs.jpg" width="630" height="130" alt="Search results and AI summary tabs below the search box"></div></figure>
+
+        <h3 style="margin-top:48px">2. Sources right where they're needed</h3>
+        <div class="text"><p>Building on the source links from the pilot, each part of the answer now carries a small <strong>source</strong> chip. Hovering or focusing on it shows the exact Boston.gov pages behind that statement, so residents can verify a fact without leaving the answer. Related questions and a clear AI disclaimer close every response.</p></div>
+        <figure><div class="panel"><img class="screen" src="images/ai/v2-answer.jpg" width="782" height="1060" alt="AI summary for Pay for a parking ticket: an answer organized by online, phone, and in person, with source chips after each statement, a popover listing two source pages, a Did this answer your question? control, related questions, and an AI disclaimer"></div><figcaption>The AI summary with inline source chips. One is open, showing the pages behind that statement.</figcaption></figure>
+
+        <h3 style="margin-top:48px">3. Feedback that tells us what to fix</h3>
+        <div class="text"><p>I originally designed the thumbs up and down feedback for AI Search. This year I expanded it: after a rating, residents can say exactly what went wrong or what went well. The options map to things the team can act on, such as outdated content, broken links, the wrong language, or slow loading, turning feedback into a content and quality roadmap.</p></div>
+        <div class="pair2" style="align-items:start">
+          <figure><div class="panel"><img class="screen" src="images/ai/v2-feedback-wrong.jpg" width="562" height="811" alt="What went wrong? dialog with checkboxes for wrong topic, inaccurate information, out-of-date information, confusing answer, missing link, broken link, wrong language, slow loading, wanting a specific page instead, not answering the question, and other"></div><figcaption>After a thumbs down</figcaption></figure>
+          <figure><div class="panel"><img class="screen" src="images/ai/v2-feedback-well.jpg" width="562" height="551" alt="What went well? dialog with checkboxes for accurate and up-to-date information, clear answer, a direct link, finding something hard to search for, faster than the old way, and other"></div><figcaption>After a thumbs up</figcaption></figure>
+        </div>
+      </section>
+
+      <section id="result" aria-labelledby="result-h">
+        <p class="label">The result</p>
+        <h2 id="result-h">A more flexible, connected search experience.</h2>
+        <ul class="results">
+          <li><strong>+23.9 pts</strong><p>increase in positive feedback compared with traditional search.</p></li>
+          <li><strong>Site-wide</strong><p>From an OEOI pilot to AI search across Boston.gov.</p></li>
+          <li><strong>Grounded answers</strong><p>Responses tied to official City pages, with clear AI disclosure.</p></li>
+          <li><strong>Actionable feedback</strong><p>Specific reasons behind every rating, mapped to fixes the team can make.</p></li>
+        </ul>
+      </section>
+
+      <section id="learned" aria-labelledby="learn-h">
+        <p class="label">What I learned</p>
+        <h2 id="learn-h">Trust has to be designed in, and kept up.</h2>
+        <div class="lessons">
+          <div><h3>AI quality depends on content quality.</h3><p>The content and information architecture work I had done on OEOI years earlier is what made it the right place to start.</p></div>
+          <div><h3>An answer isn't the same as a successful outcome.</h3><p>A generated summary doesn't mean a resident found what they need. Reaching the official resource and taking the next step matters just as much.</p></div>
+          <div><h3>Be honest about the technology.</h3><p>Residents need to know what's AI-generated, where it comes from, and what to do when it can't help.</p></div>
+          <div><h3>AI products need continuous iteration.</h3><p>Launch is the beginning. Feedback, content quality, and testing keep making the experience better.</p></div>
+        </div>
+      </section>
+    </article>
+  </div>
+
+  <section class="next" aria-label="Next case study">
+    <div class="container"><p>Next case study</p><a href="chosen-name.html">Chosen Name</a></div>
+  </section>
+</main>
+
+<footer><div class="container"><p>© 2026 Juliana Donovan Agudelo</p><p><a href="mailto:jdonovanagudelo@gmail.com">jdonovanagudelo@gmail.com</a></p></div></footer>
+
+<script>
+  const links=[...document.querySelectorAll('.toc a')];
+  const map=new Map(links.map(a=>[a.getAttribute('href').slice(1),a]));
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.removeAttribute('aria-current'));const a=map.get(e.target.id);if(a)a.setAttribute('aria-current','true');}})},{rootMargin:'-30% 0px -60% 0px'});
+    document.querySelectorAll('article section[id]').forEach(s=>io.observe(s));
+  }
+</script>
+</body>
+</html>
